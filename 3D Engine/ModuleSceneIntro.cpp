@@ -54,6 +54,7 @@ update_status ModuleSceneIntro::Update(float dt)
 	p.Render();
 
 	static bool show_test_window = false;
+	static bool quit = false;
 
 	if (show_test_window)
 	{
@@ -68,62 +69,11 @@ update_status ModuleSceneIntro::Update(float dt)
 			ImGui::Text("Open file");
 			ImGui::Separator();
 			ImGui::Text("Save file");
-			ImGui::EndMenu();
-		}
-
-		if (ImGui::BeginMenu("Edit"))
-		{
-			ImGui::Text("Undo");
-			ImGui::Text("Redo");
 			ImGui::Separator();
-			ImGui::Text("Cut");
-			ImGui::Text("Copy");
-			ImGui::Text("Paste");
-			ImGui::Separator();
-			ImGui::Text("Duplicate");
-			ImGui::Text("Delete");
-			ImGui::EndMenu();
-		}
-
-		if (ImGui::BeginMenu("Assets"))
-		{
-			ImGui::Text("Import new asset");
-			ImGui::EndMenu();
-		}
-
-		if (ImGui::BeginMenu("GameObject"))
-		{
-			ImGui::Text("Create empty");
-			if (ImGui::BeginMenu("3D object"))
+			if (ImGui::MenuItem("Exit"))
 			{
-				ImGui::Text("Cube");
-				ImGui::Text("Sphere");
-				ImGui::Text("Capsule");
-				ImGui::Text("Cylinder");
-				ImGui::Separator();
-				ImGui::Text("Plane");
-				ImGui::Text("Quad");
-				ImGui::EndMenu();
+				App->input->Quit();
 			}
-			ImGui::EndMenu();
-		}
-
-		if (ImGui::BeginMenu("Component"))
-		{
-			ImGui::Text("Mesh");
-			ImGui::Text("Physics");
-			ImGui::EndMenu();
-		}
-
-		if (ImGui::BeginMenu("Window"))
-		{
-			ImGui::Checkbox("Show test window", &show_test_window);
-			ImGui::EndMenu();
-		}
-
-		if (ImGui::BeginMenu("About"))
-		{
-
 			ImGui::EndMenu();
 		}
 		
