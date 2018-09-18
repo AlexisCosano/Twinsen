@@ -19,8 +19,8 @@
     <Filter Include="Sources\Modules\Game">
       <UniqueIdentifier>{83f46af7-e02f-40c0-9e56-41d76082527b}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Sources\Tools\ImGUI">
-      <UniqueIdentifier>{2a720246-3b95-4422-b664-7aade8aa9cc6}</UniqueIdentifier>
+    <Filter Include="Sources\Tools\ImGui">
+      <UniqueIdentifier>{7d157a0d-fb18-40df-b054-88b378e8c21a}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -87,23 +87,14 @@
     <ClInclude Include="ModulePlayer.h">
       <Filter>Sources\Modules\Game</Filter>
     </ClInclude>
-    <ClInclude Include="ImGUI\imconfig.h">
-      <Filter>Sources\Tools\ImGUI</Filter>
+    <ClInclude Include="imGUI\imgui.h">
+      <Filter>Sources\Tools\ImGui</Filter>
     </ClInclude>
-    <ClInclude Include="ImGUI\imgui.h">
-      <Filter>Sources\Tools\ImGUI</Filter>
+    <ClInclude Include="imGUI\imgui_internal.h">
+      <Filter>Sources\Tools\ImGui</Filter>
     </ClInclude>
-    <ClInclude Include="ImGUI\imgui_internal.h">
-      <Filter>Sources\Tools\ImGUI</Filter>
-    </ClInclude>
-    <ClInclude Include="ImGUI\imstb_rectpack.h">
-      <Filter>Sources\Tools\ImGUI</Filter>
-    </ClInclude>
-    <ClInclude Include="ImGUI\imstb_textedit.h">
-      <Filter>Sources\Tools\ImGUI</Filter>
-    </ClInclude>
-    <ClInclude Include="ImGUI\imstb_truetype.h">
-      <Filter>Sources\Tools\ImGUI</Filter>
+    <ClInclude Include="imGUI\imgui_impl_sdl_gl3.h">
+      <Filter>Sources\Tools\ImGui</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -161,17 +152,17 @@
     <ClCompile Include="ModulePlayer.cpp">
       <Filter>Sources\Modules\Game</Filter>
     </ClCompile>
-    <ClCompile Include="ImGUI\imgui.cpp">
-      <Filter>Sources\Tools\ImGUI</Filter>
+    <ClCompile Include="imGUI\imgui.cpp">
+      <Filter>Sources\Tools\ImGui</Filter>
     </ClCompile>
-    <ClCompile Include="ImGUI\imgui_demo.cpp">
-      <Filter>Sources\Tools\ImGUI</Filter>
+    <ClCompile Include="imGUI\imgui_demo.cpp">
+      <Filter>Sources\Tools\ImGui</Filter>
     </ClCompile>
-    <ClCompile Include="ImGUI\imgui_draw.cpp">
-      <Filter>Sources\Tools\ImGUI</Filter>
+    <ClCompile Include="imGUI\imgui_draw.cpp">
+      <Filter>Sources\Tools\ImGui</Filter>
     </ClCompile>
-    <ClCompile Include="ImGUI\imgui_widgets.cpp">
-      <Filter>Sources\Tools\ImGUI</Filter>
+    <ClCompile Include="imGUI\imgui_impl_sdl_gl3.cpp">
+      <Filter>Sources\Tools\ImGui</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>
