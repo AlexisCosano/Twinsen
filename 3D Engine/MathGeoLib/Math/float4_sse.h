@@ -131,13 +131,13 @@ FORCE_INLINE float dot4_float(simd4f a, simd4f b)
 	return s4f_x(dot4_ps(a, b));
 }
 
-simd4f vec3_length_ps(simd4f vec);
-simd4f vec3_length_ps3(simd4f vec);
+simd4f math::float3_length_ps(simd4f vec);
+simd4f math::float3_length_ps3(simd4f vec);
 
 /// Returns a normalized copy of the given vector. Returns the length of the original vector in outLength.
 FORCE_INLINE simd4f vec4_safe_normalize3(simd4f vec, simd4f &outLength)
 {
-	outLength = vec3_length_ps3(vec);
+	outLength = math::float3_length_ps3(vec);
 	simd4f isZero = _mm_cmplt_ps(outLength, simd4fEpsilon); // Was the length zero?
 	simd4f normalized = _mm_div_ps(vec, outLength); // Normalize.
 	normalized = cmov_ps(normalized, float4::unitX.v, isZero); // If length == 0, output the vector (1,0,0).

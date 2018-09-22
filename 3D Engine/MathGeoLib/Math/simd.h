@@ -245,7 +245,7 @@ int FORCE_INLINE allone_ps(simd4f x)
 #define mnsub_ps(a, b, c) sub_ps(neg_ps(mul_ps((a), (b))), (c))
 #endif
 
-static inline __m128 load_vec3(const float *ptr, float w)
+static inline __m128 load_math::float3(const float *ptr, float w)
 {
 	__m128 low = _mm_loadl_pi(_mm_setzero_ps(), (const __m64*)ptr); // [_ _ y x]
 	__m128 high = _mm_load_ss(ptr + 2); // [_ _ _ z]
@@ -253,7 +253,7 @@ static inline __m128 load_vec3(const float *ptr, float w)
 	return _mm_movelh_ps(low, high);
 }
 
-static inline void store_vec3(float *ptr, simd4f v)
+static inline void store_math::float3(float *ptr, simd4f v)
 {
 	_mm_storel_pi((__m64*)ptr, v);
 	v = _mm_movehl_ps(v, v);
@@ -662,14 +662,14 @@ FORCE_INLINE simd4f pos_from_scalar_ps(float scalar)
 	return vsetq_lane_f32(1.f, vdupq_n_f32(scalar), 3);
 }
 
-FORCE_INLINE simd4f load_vec3(const float *ptr, float w)
+FORCE_INLINE simd4f load_math::float3(const float *ptr, float w)
 {
 	float32x2_t low = vld1_f32(ptr); // [y x]
 	float32x2_t high = (float32x2_t) { ptr[2], w }; // [w z]
 	return vcombine_f32(low, high); // [w z y x]
 }
 
-FORCE_INLINE void store_vec3(float *ptr, simd4f v)
+FORCE_INLINE void store_math::float3(float *ptr, simd4f v)
 {
 	vst1_f32(ptr, vget_low_f32(v)); // store x & y
 	vst1q_lane_f32(ptr+2, v, 2); // store z

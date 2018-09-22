@@ -209,12 +209,12 @@ FORCE_INLINE simd4f vec4_length_sq_ps(simd4f vec)
 	return dot4_ps(vec, vec);
 }
 
-FORCE_INLINE float vec3_length_sq_float(simd4f vec)
+FORCE_INLINE float math::float3_length_sq_float(simd4f vec)
 {
 	return dot3_float(vec, vec);
 }
 
-FORCE_INLINE simd4f vec3_length_sq_ps(simd4f vec)
+FORCE_INLINE simd4f math::float3_length_sq_ps(simd4f vec)
 {
 	return dot3_ps(vec, vec);
 }
@@ -234,24 +234,24 @@ FORCE_INLINE simd4f vec4_normalize(simd4f vec)
 	return mul_ps(vec, rsqrt_ps(vec4_length_sq_ps(vec)));
 }
 
-FORCE_INLINE float vec3_length_float(simd4f vec)
+FORCE_INLINE float math::float3_length_float(simd4f vec)
 {
 	return s4f_x(sqrt_ps(dot3_ps3(vec, vec)));
 }
 
-FORCE_INLINE simd4f vec3_length_ps(simd4f vec)
+FORCE_INLINE simd4f math::float3_length_ps(simd4f vec)
 {
 	return sqrt_ps(dot3_ps(vec, vec));
 }
 
-FORCE_INLINE simd4f vec3_length_ps3(simd4f vec)
+FORCE_INLINE simd4f math::float3_length_ps3(simd4f vec)
 {
 	return sqrt_ps(dot3_ps3(vec, vec));
 }
 
-FORCE_INLINE simd4f vec3_normalize(simd4f vec)
+FORCE_INLINE simd4f math::float3_normalize(simd4f vec)
 {
-	return mul_ps(vec, rsqrt_ps(vec3_length_sq_ps(vec)));
+	return mul_ps(vec, rsqrt_ps(math::float3_length_sq_ps(vec)));
 }
 
 // T should be a 4-vector containing the lerp weight [w,w,w,w] in all channels.

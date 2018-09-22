@@ -258,7 +258,7 @@ float3 MUST_USE_RESULT Quat::Transform(const float3 &vec) const
 {
 	assume2(this->IsNormalized(), *this, this->LengthSq());
 #if defined(MATH_AUTOMATIC_SSE) && defined(MATH_SIMD)
-	return float4(quat_transform_vec4(q, load_vec3(vec.ptr(), 0.f))).xyz();
+	return float4(quat_transform_vec4(q, load_math::float3(vec.ptr(), 0.f))).xyz();
 #else
 	///\todo Optimize/benchmark the scalar path not to generate a matrix!
 	float3x3 mat = this->ToFloat3x3();
@@ -456,7 +456,7 @@ void Quat::ToAxisAngle(float4 &axis, float &angle) const
 void Quat::SetFromAxisAngle(const float3 &axis, float angle)
 {
 #if defined(MATH_AUTOMATIC_SSE) && defined(MATH_SSE2)
-	SetFromAxisAngle(load_vec3(axis.ptr(), 0.f), angle);
+	SetFromAxisAngle(load_math::float3(axis.ptr(), 0.f), angle);
 #else
 	assume1(axis.IsNormalized(), axis);
 	assume1(MATH_NS::IsFinite(angle), angle);
@@ -735,7 +735,7 @@ float4x4 MUST_USE_RESULT Quat::ToFloat4x4() const
 	assume(IsNormalized());
 #if defined(MATH_AUTOMATIC_SSE) && defined(MATH_SSE)
 	float4x4 m;
-	quat_to_mat4x4(q, _mm_set_ps(1,0,0,0), m.row);
+	quat_to_math::float4x4(q, _mm_set_ps(1,0,0,0), m.row);
 	return m;
 #else
 	return float4x4(*this);
@@ -756,7 +756,7 @@ float4x4 MUST_USE_RESULT Quat::ToFloat4x4(const float4 &translation) const
 	assume(IsNormalized());
 #if defined(MATH_AUTOMATIC_SSE) && defined(MATH_SSE)
 	float4x4 m;
-	quat_to_mat4x4(q, translation.v, m.row);
+	quat_to_math::float4x4(q, translation.v, m.row);
 	return m;
 #else
 	return float4x4(*this, translation.xyz());

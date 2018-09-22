@@ -53,9 +53,9 @@ float4x4::float4x4(float _00, float _01, float _02, float _03,
 float4x4::float4x4(const float3x3 &m)
 {
 #ifdef MATH_AUTOMATIC_SSE
-	row[0] = load_vec3(m.ptr(), 0.f);
-	row[1] = load_vec3(m.ptr() + 3, 0.f);
-	row[2] = load_vec3(m.ptr() + 6, 0.f);
+	row[0] = load_math::float3(m.ptr(), 0.f);
+	row[1] = load_math::float3(m.ptr() + 3, 0.f);
+	row[2] = load_math::float3(m.ptr() + 6, 0.f);
 	row[3] = set_ps(1.f, 0.f, 0.f, 0.f);
 #else
 	Set(m.At(0,0), m.At(0,1), m.At(0,2), 0.f,
@@ -102,7 +102,7 @@ float4x4::float4x4(const float4 &col0, const float4 &col1, const float4 &col2, c
 float4x4::float4x4(const Quat &orientation)
 {
 #if defined(MATH_AUTOMATIC_SSE) && defined(MATH_SSE)
-	quat_to_mat4x4(orientation.q, set_ps(1, 0, 0, 0), row);
+	quat_to_math::float4x4(orientation.q, set_ps(1, 0, 0, 0), row);
 #else
 	SetRotatePart(orientation);
 	SetRow(3, 0, 0, 0, 1);
@@ -113,7 +113,7 @@ float4x4::float4x4(const Quat &orientation)
 float4x4::float4x4(const Quat &orientation, const float3 &translation)
 {
 #if defined(MATH_AUTOMATIC_SSE) && defined(MATH_SSE)
-	quat_to_mat4x4(orientation.q, float4(translation, 1.f), row);
+	quat_to_math::float4x4(orientation.q, float4(translation, 1.f), row);
 #else
 	SetRotatePart(orientation);
 	SetTranslatePart(translation);
@@ -962,7 +962,7 @@ void float4x4::Set(float _00, float _01, float _02, float _03,
                    float _30, float _31, float _32, float _33)
 {
 #if defined(MATH_AUTOMATIC_SSE) && defined(MATH_SIMD)
-	mat4x4_set(row, _00, _01, _02, _03,
+	math::float4x4_set(row, _00, _01, _02, _03,
 	                _10, _11, _12, _13,
 	                _20, _21, _22, _23,
 	                _30, _31, _32, _33);
@@ -1293,7 +1293,7 @@ float float4x4::Determinant3() const
 float float4x4::Determinant4() const
 {
 #if defined(MATH_AUTOMATIC_SSE) && defined(MATH_SIMD)
-	return mat4x4_determinant(row);
+	return math::float4x4_determinant(row);
 #else
 	assume(IsFinite());
 	return v[0][0] * Minor(0,0) - v[0][1] * Minor(0,1) + v[0][2] * Minor(0,2) - v[0][3] * Minor(0,3);
@@ -1362,7 +1362,7 @@ bool float4x4::Inverse(float epsilon)
 {
 #if defined(MATH_AUTOMATIC_SSE) && defined(MATH_SSE)
 	MARK_UNUSED(epsilon);
-	float det = mat4x4_inverse(row, row);
+	float det = math::float4x4_inverse(row, row);
 	return MATH_NS::Abs(det) > 1e-5f;
 #else
 	return InverseMatrix(*this, epsilon);
@@ -1373,7 +1373,7 @@ float4x4 float4x4::Inverted() const
 {
 #if defined(MATH_AUTOMATIC_SSE) && defined(MATH_SSE)
 	float4x4 copy;
-	mat4x4_inverse(row, copy.row);
+	math::float4x4_inverse(row, copy.row);
 #else
 	float4x4 copy = *this;
 	copy.Inverse();
@@ -1408,7 +1408,7 @@ void float4x4::InverseOrthonormal()
 void float4x4::Transpose()
 {
 #if defined(MATH_AUTOMATIC_SSE) && !defined(ANDROID) ///\bug Android GCC 4.6.6 gives internal compiler error!
-	mat4x4_transpose(row, row);
+	math::float4x4_transpose(row, row);
 #else
 	Swap(v[0][1], v[1][0]);
 	Swap(v[0][2], v[2][0]);
@@ -1423,7 +1423,7 @@ float4x4 float4x4::Transposed() const
 {
 #if defined(MATH_AUTOMATIC_SSE) && !defined(ANDROID) ///\bug Android GCC 4.6.6 gives internal compiler error!
 	float4x4 copy;
-	mat4x4_transpose(copy.row, row);
+	math::float4x4_transpose(copy.row, row);
 	return copy;
 #else
 	float4x4 copy;
@@ -1583,7 +1583,7 @@ float3 float4x4::TransformDir(float x, float y, float z) const
 float4 float4x4::Transform(const float4 &vector) const
 {
 #if defined(MATH_AUTOMATIC_SSE) && !defined(ANDROID) ///\bug Android GCC 4.6.6 gives internal compiler error!
-	return mat4x4_mul_vec4(row, vector.v);
+	return math::float4x4_mul_vec4(row, vector.v);
 #else
 	return float4(DOT4(Row(0), vector),
 	              DOT4(Row(1), vector),
@@ -1683,7 +1683,7 @@ float4x4 float4x4::operator *(const float3x3 &rhs) const
 {
 	float4x4 r;
 #if defined(MATH_SSE) && defined(MATH_AUTOMATIC_SSE)
-	mat4x4_mul_mat3x3_sse(r.row, this->row, rhs.ptr());
+	math::float4x4_mul_math::float3x3_sse(r.row, this->row, rhs.ptr());
 #else
 	const float *c0 = rhs.ptr();
 	const float *c1 = rhs.ptr() + 1;
@@ -1715,7 +1715,7 @@ float4x4 float4x4::operator *(const float3x4 &rhs) const
 {
 	float4x4 r;
 #if defined(MATH_SSE) && defined(MATH_AUTOMATIC_SSE)
-	mat4x4_mul_mat3x4_sse(r.row, this->row, rhs.row);
+	math::float4x4_mul_mat3x4_sse(r.row, this->row, rhs.row);
 #else
 	const float *c0 = rhs.ptr();
 	const float *c1 = rhs.ptr() + 1;
@@ -1748,7 +1748,7 @@ float4x4 float4x4::operator *(const float4x4 &rhs) const
 {
 	float4x4 r;
 #ifdef MATH_AUTOMATIC_SSE
-	mat4x4_mul_mat4x4(r.row, this->row, rhs.row);
+	math::float4x4_mul_math::float4x4(r.row, this->row, rhs.row);
 #else
 	const float *c0 = rhs.ptr();
 	const float *c1 = rhs.ptr() + 1;
@@ -1798,7 +1798,7 @@ float4x4 float4x4::operator *(float scalar) const
 {
 #ifdef MATH_AUTOMATIC_SSE
 	float4x4 r;
-	mat4x4_mul_float(r.row, row, scalar);
+	math::float4x4_mul_float(r.row, row, scalar);
 #else
 	float4x4 r = *this;
 	r *= scalar;
@@ -1812,7 +1812,7 @@ float4x4 float4x4::operator /(float scalar) const
 
 #ifdef MATH_AUTOMATIC_SSE
 	float4x4 r;
-	mat4x4_div_float(r.row, row, scalar);
+	math::float4x4_div_float(r.row, row, scalar);
 #else
 	float4x4 r = *this;
 	r /= scalar;
@@ -1824,7 +1824,7 @@ float4x4 float4x4::operator +(const float4x4 &rhs) const
 {
 #ifdef MATH_AUTOMATIC_SSE
 	float4x4 r;
-	mat4x4_add_mat4x4(r.row, row, rhs.row);
+	math::float4x4_add_math::float4x4(r.row, row, rhs.row);
 #else
 	float4x4 r = *this;
 	r += rhs;
@@ -1836,7 +1836,7 @@ float4x4 float4x4::operator -(const float4x4 &rhs) const
 {
 #ifdef MATH_AUTOMATIC_SSE
 	float4x4 r;
-	mat4x4_sub_mat4x4(r.row, row, rhs.row);
+	math::float4x4_sub_math::float4x4(r.row, row, rhs.row);
 #else
 	float4x4 r = *this;
 	r -= rhs;
@@ -1848,7 +1848,7 @@ float4x4 float4x4::operator -() const
 {
 #ifdef MATH_AUTOMATIC_SSE
 	float4x4 r;
-	mat4x4_negate(r.row, row);
+	math::float4x4_negate(r.row, row);
 	return r;
 #else
 	return float4x4(-v[0][0], -v[0][1], -v[0][2], -v[0][3],
@@ -1861,7 +1861,7 @@ float4x4 float4x4::operator -() const
 float4x4 &float4x4::operator *=(float s)
 {
 #ifdef MATH_AUTOMATIC_SSE
-	mat4x4_mul_float(row, row, s);
+	math::float4x4_mul_float(row, row, s);
 #else
 	v[0][0] *= s; v[0][1] *= s; v[0][2] *= s; v[0][3] *= s;
 	v[1][0] *= s; v[1][1] *= s; v[1][2] *= s; v[1][3] *= s;
@@ -1880,7 +1880,7 @@ float4x4 &float4x4::operator /=(float scalar)
 float4x4 &float4x4::operator +=(const float4x4 &rhs)
 {
 #ifdef MATH_AUTOMATIC_SSE
-	mat4x4_add_mat4x4(row, row, rhs.row);
+	math::float4x4_add_math::float4x4(row, row, rhs.row);
 #else
 	v[0][0] += rhs.v[0][0]; v[0][1] += rhs.v[0][1]; v[0][2] += rhs.v[0][2]; v[0][3] += rhs.v[0][3];
 	v[1][0] += rhs.v[1][0]; v[1][1] += rhs.v[1][1]; v[1][2] += rhs.v[1][2]; v[1][3] += rhs.v[1][3];
@@ -1893,7 +1893,7 @@ float4x4 &float4x4::operator +=(const float4x4 &rhs)
 float4x4 &float4x4::operator -=(const float4x4 &rhs)
 {
 #ifdef MATH_AUTOMATIC_SSE
-	mat4x4_sub_mat4x4(row, row, rhs.row);
+	math::float4x4_sub_math::float4x4(row, row, rhs.row);
 #else
 	v[0][0] -= rhs.v[0][0]; v[0][1] -= rhs.v[0][1]; v[0][2] -= rhs.v[0][2]; v[0][3] -= rhs.v[0][3];
 	v[1][0] -= rhs.v[1][0]; v[1][1] -= rhs.v[1][1]; v[1][2] -= rhs.v[1][2]; v[1][3] -= rhs.v[1][3];
@@ -2176,7 +2176,7 @@ float4x4 operator *(const float3x3 &lhs, const float4x4 &rhs)
 {
 	float4x4 r;
 #if defined(MATH_AUTOMATIC_SSE) && defined(MATH_SSE)
-	mat3x3_mul_mat4x4_sse(r.row, lhs.ptr(), rhs.row);
+	math::float3x3_mul_math::float4x4_sse(r.row, lhs.ptr(), rhs.row);
 #else
 	const float *c0 = rhs.ptr();
 	const float *c1 = rhs.ptr() + 1;
@@ -2209,7 +2209,7 @@ float4x4 operator *(const float3x4 &lhs, const float4x4 &rhs)
 {
 	float4x4 r;
 #if defined(MATH_AUTOMATIC_SSE) && defined(MATH_SSE)
-	mat3x4_mul_mat4x4_sse(r.row, lhs.row, rhs.row);
+	mat3x4_mul_math::float4x4_sse(r.row, lhs.row, rhs.row);
 #else
 	const float *c0 = rhs.ptr();
 	const float *c1 = rhs.ptr() + 1;
@@ -2241,7 +2241,7 @@ float4x4 operator *(const float3x4 &lhs, const float4x4 &rhs)
 float4 operator *(const float4 &lhs, const float4x4 &rhs)
 {
 #ifdef MATH_AUTOMATIC_SSE
-	return vec4_mul_mat4x4(lhs.v, rhs.row);
+	return vec4_mul_math::float4x4(lhs.v, rhs.row);
 #else
 	return float4(DOT4STRIDED(lhs, rhs.ptr(), 4),
 	              DOT4STRIDED(lhs, rhs.ptr()+1, 4),

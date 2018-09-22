@@ -924,7 +924,7 @@ float3x4 float3x4::Inverted() const
 {
 #if defined(MATH_AUTOMATIC_SSE) && defined(MATH_SSE)
 	float3x4 copy;
-	mat4x4_inverse(row, copy.row);
+	math::float4x4_inverse(row, copy.row);
 #else
 	float3x4 copy = *this;
 	copy.Inverse();

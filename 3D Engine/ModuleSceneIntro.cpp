@@ -1,7 +1,6 @@
 #include "Globals.h"
 #include "Application.h"
 #include "ModuleSceneIntro.h"
-#include "Primitive.h"
 #include "imGUI\imgui.h"
 #include "imGUI\imgui_impl_sdl_gl3.h"
 #include "Glew\include\glew.h"
@@ -24,8 +23,8 @@ bool ModuleSceneIntro::Start()
 	glewInit();
 	ImGui_ImplSdlGL3_Init(App->window->window);
 
-	App->camera->Move(vec3(1.0f, 1.0f, 0.0f));
-	App->camera->LookAt(vec3(0, 0, 0));
+	App->camera->Move(math::float3(1.0f, 1.0f, 0.0f));
+	App->camera->LookAt(math::float3(0, 0, 0));
 
 	return ret;
 }
@@ -48,10 +47,12 @@ update_status ModuleSceneIntro::PreUpdate(float dt)
 // Update
 update_status ModuleSceneIntro::Update(float dt)
 {
+	/*
 	Plane p(0, 1, 0, 0);
 	p.axis = true;
 	p.Render();
-	
+	*/
+
 	static bool show_test_window = false;
 	static bool quit = false;
 

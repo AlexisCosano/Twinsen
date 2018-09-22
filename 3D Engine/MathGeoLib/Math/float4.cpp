@@ -59,7 +59,7 @@ float4::float4(const float3 &xyz, float w_)
 {
 #if defined(MATH_AUTOMATIC_SSE) && defined(MATH_SSE)
 	// Best: 1.536 nsecs / 4.032 ticks, Avg: 1.540 nsecs, Worst: 1.920 nsecs
-	v = load_vec3(xyz.ptr(), w_);
+	v = load_math::float3(xyz.ptr(), w_);
 #endif
 }
 
@@ -307,7 +307,7 @@ void float4::NormalizeW_SSE()
 float float4::LengthSq3() const
 {
 #ifdef MATH_AUTOMATIC_SSE
-	return vec3_length_sq_float(v);
+	return math::float3_length_sq_float(v);
 #else
 	return x*x + y*y + z*z;
 #endif
@@ -316,7 +316,7 @@ float float4::LengthSq3() const
 float float4::Length3() const
 {
 #ifdef MATH_AUTOMATIC_SSE
-	return vec3_length_float(v);
+	return math::float3_length_float(v);
 #else
 	return Sqrt(x*x + y*y + z*z);
 #endif
@@ -768,7 +768,7 @@ float4 float4::Clamp(float floor, float ceil) const
 float float4::Distance3Sq(const float4 &rhs) const
 {
 #if defined(MATH_AUTOMATIC_SSE) && defined(MATH_SIMD)
-	return vec3_length_sq_float(sub_ps(v, rhs.v));
+	return math::float3_length_sq_float(sub_ps(v, rhs.v));
 #else
 	float dx = x - rhs.x;
 	float dy = y - rhs.y;
@@ -780,7 +780,7 @@ float float4::Distance3Sq(const float4 &rhs) const
 float float4::Distance3(const float4 &rhs) const
 {
 #if defined(MATH_AUTOMATIC_SSE) && defined(MATH_SIMD)
-	return vec3_length_float(sub_ps(v, rhs.v));
+	return math::float3_length_float(sub_ps(v, rhs.v));
 #else
 	return Sqrt(Distance3Sq(rhs));
 #endif
@@ -859,7 +859,7 @@ i x j == -(j x i) == k,
 float4 float4::Cross3(const float3 &rhs) const
 {
 #if defined(MATH_AUTOMATIC_SSE) && defined(MATH_SIMD)
-	return float4(cross_ps(v, load_vec3(rhs.ptr(), 0.f)));
+	return float4(cross_ps(v, load_math::float3(rhs.ptr(), 0.f)));
 #else
 	float4 dst;
 	dst.x = y * rhs.z - z * rhs.y;

@@ -28,7 +28,7 @@ MATH_BEGIN_NAMESPACE
 
 #if !defined(ANDROID) ///\bug Android GCC 4.6.6 gives internal compiler error!
 // Multiplies mat * vec, where mat is a matrix in row-major format.
-FORCE_INLINE simd4f mat4x4_mul_vec4(const simd4f *mat, simd4f vec)
+FORCE_INLINE simd4f math::float4x4_mul_vec4(const simd4f *mat, simd4f vec)
 {
 #ifdef MATH_NEON
 	// Transpose matrix at load time to get in registers in column-major format.
@@ -38,15 +38,15 @@ FORCE_INLINE simd4f mat4x4_mul_vec4(const simd4f *mat, simd4f vec)
 	ret = vmlaq_lane_f32(ret, m.val[2], vget_high_f32(vec), 0);
 	return vmlaq_lane_f32(ret, m.val[3], vget_high_f32(vec), 1);
 #elif defined(MATH_SSE3)
-	return mat4x4_mul_sse3(mat, vec);
+	return math::float4x4_mul_sse3(mat, vec);
 #else
-	return mat4x4_mul_sse1(mat, vec);
+	return math::float4x4_mul_sse1(mat, vec);
 #endif
 }
 #endif
 
 // Multiplies vec * mat, where mat is a matrix in row-major format.
-FORCE_INLINE simd4f vec4_mul_mat4x4(simd4f vec, const simd4f *mat)
+FORCE_INLINE simd4f vec4_mul_math::float4x4(simd4f vec, const simd4f *mat)
 {
 #ifdef MATH_NEON
 	simd4f ret = vmulq_lane_f32(mat[0], vget_low_f32(vec), 0);
@@ -54,12 +54,12 @@ FORCE_INLINE simd4f vec4_mul_mat4x4(simd4f vec, const simd4f *mat)
 	ret = vmlaq_lane_f32(ret, mat[2], vget_high_f32(vec), 0);
 	return vmlaq_lane_f32(ret, mat[3], vget_high_f32(vec), 1);
 #else
-	return colmajor_mat4x4_mul_sse1(mat, vec);
+	return colmajor_math::float4x4_mul_sse1(mat, vec);
 #endif
 }
 
 // Multiplies m1 * m2, where m1 and m2 are stored in row-major format.
-FORCE_INLINE void mat4x4_mul_mat4x4(simd4f *out, const simd4f *m1, const simd4f *m2)
+FORCE_INLINE void math::float4x4_mul_math::float4x4(simd4f *out, const simd4f *m1, const simd4f *m2)
 {
 #if defined(MATH_NEON)
 	simd4f r1 = vmulq_lane_f32(m2[0], vget_low_f32(m1[0]), 0);
@@ -87,12 +87,12 @@ FORCE_INLINE void mat4x4_mul_mat4x4(simd4f *out, const simd4f *m1, const simd4f 
 	out[2] = r3;
 	out[3] = r4;
 #else
-	mat4x4_mul_sse(out, m1, m2);
+	math::float4x4_mul_sse(out, m1, m2);
 #endif
 }
 
 #ifdef ANDROID
-FORCE_INLINE void mat4x4_mul_mat4x4_asm(simd4f *out, const simd4f *m1, const simd4f *m2)
+FORCE_INLINE void math::float4x4_mul_math::float4x4_asm(simd4f *out, const simd4f *m1, const simd4f *m2)
 {
 	asm(
 		"\t vldmia %1, {q4-q7} \n"
@@ -121,7 +121,7 @@ FORCE_INLINE void mat4x4_mul_mat4x4_asm(simd4f *out, const simd4f *m1, const sim
 #endif
 
 #if !defined(ANDROID) ///\bug Android GCC 4.6.6 gives internal compiler error!
-FORCE_INLINE void mat4x4_transpose(simd4f *out, const simd4f *mat)
+FORCE_INLINE void math::float4x4_transpose(simd4f *out, const simd4f *mat)
 {
 #ifdef MATH_NEON
 	float32x4x4_t m = vld4q_f32((const float32_t*)mat);
@@ -157,7 +157,7 @@ FORCE_INLINE void mat4x4_transpose(simd4f *out, const simd4f *mat)
 }
 #endif
 
-FORCE_INLINE void mat4x4_set(simd4f *mat, float _00, float _01, float _02, float _03,
+FORCE_INLINE void math::float4x4_set(simd4f *mat, float _00, float _01, float _02, float _03,
                                           float _10, float _11, float _12, float _13,
                                           float _20, float _21, float _22, float _23,
                                           float _30, float _31, float _32, float _33)
@@ -174,7 +174,7 @@ FORCE_INLINE void mat4x4_set(simd4f *mat, float _00, float _01, float _02, float
 #endif
 }
 
-FORCE_INLINE void mat4x4_mul_float(simd4f *out, const simd4f *mat, float scalar)
+FORCE_INLINE void math::float4x4_mul_float(simd4f *out, const simd4f *mat, float scalar)
 {
 #ifdef MATH_AVX
 	__m256 s = _mm256_set1_ps(scalar);
@@ -191,7 +191,7 @@ FORCE_INLINE void mat4x4_mul_float(simd4f *out, const simd4f *mat, float scalar)
 #endif
 }
 
-FORCE_INLINE void mat4x4_div_float(simd4f *out, const simd4f *mat, float scalar)
+FORCE_INLINE void math::float4x4_div_float(simd4f *out, const simd4f *mat, float scalar)
 {
 #ifdef MATH_AVX
 	__m256 *o = (__m256*)out;
@@ -212,7 +212,7 @@ FORCE_INLINE void mat4x4_div_float(simd4f *out, const simd4f *mat, float scalar)
 #endif
 }
 
-FORCE_INLINE void mat4x4_add_mat4x4(simd4f *out, const simd4f *m1, const simd4f *m2)
+FORCE_INLINE void math::float4x4_add_math::float4x4(simd4f *out, const simd4f *m1, const simd4f *m2)
 {
 #ifdef MATH_AVX
 	__m256 *o = (__m256*)out;
@@ -228,7 +228,7 @@ FORCE_INLINE void mat4x4_add_mat4x4(simd4f *out, const simd4f *m1, const simd4f 
 #endif
 }
 
-FORCE_INLINE void mat4x4_sub_mat4x4(simd4f *out, const simd4f *m1, const simd4f *m2)
+FORCE_INLINE void math::float4x4_sub_math::float4x4(simd4f *out, const simd4f *m1, const simd4f *m2)
 {
 #ifdef MATH_AVX
 	__m256 *o = (__m256*)out;
@@ -244,7 +244,7 @@ FORCE_INLINE void mat4x4_sub_mat4x4(simd4f *out, const simd4f *m1, const simd4f 
 #endif
 }
 
-FORCE_INLINE void mat4x4_negate(simd4f *out, const simd4f *mat)
+FORCE_INLINE void math::float4x4_negate(simd4f *out, const simd4f *mat)
 {
 #ifdef MATH_AVX
 	__m256 zero = _mm256_setzero_ps();

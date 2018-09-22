@@ -26,11 +26,11 @@
 
 MATH_BEGIN_NAMESPACE
 
-void quat_to_mat4x4(__m128 q, __m128 t, __m128 *m);
+void quat_to_math::float4x4(__m128 q, __m128 t, __m128 *m);
 
 /// Compute the product M*v, where M is a 4x4 matrix denoted by an array of 4 __m128's, and v is a 4x1 vector.
 #ifdef MATH_SSE3 // If we have SSE3, we can repeatedly use haddps to accumulate the result.
-inline __m128 mat4x4_mul_sse3(const __m128 *matrix, __m128 vector)
+inline __m128 math::float4x4_mul_sse3(const __m128 *matrix, __m128 vector)
 {
 	__m128 x = _mm_mul_ps(matrix[0], vector);
 	__m128 y = _mm_mul_ps(matrix[1], vector);
@@ -43,7 +43,7 @@ inline __m128 mat4x4_mul_sse3(const __m128 *matrix, __m128 vector)
 }
 #endif
 
-inline __m128 mat4x4_mul_sse1(const __m128 *matrix, __m128 vector)
+inline __m128 math::float4x4_mul_sse1(const __m128 *matrix, __m128 vector)
 {
 	__m128 x = _mm_mul_ps(matrix[0], vector);
 	__m128 y = _mm_mul_ps(matrix[1], vector);
@@ -58,7 +58,7 @@ inline __m128 mat4x4_mul_sse1(const __m128 *matrix, __m128 vector)
 	return _mm_add_ps(_mm_movelh_ps(t0, t2), _mm_movehl_ps(t2, t0));
 }
 
-inline __m128 colmajor_mat4x4_mul_sse1(const __m128 *matrix, __m128 vector)
+inline __m128 colmajor_math::float4x4_mul_sse1(const __m128 *matrix, __m128 vector)
 {
 	__m128 x = xxxx_ps(vector);
 	__m128 y = yyyy_ps(vector);
@@ -74,7 +74,7 @@ inline __m128 colmajor_mat4x4_mul_sse1(const __m128 *matrix, __m128 vector)
 
 #if 0
 /// Transforms a direction vector (w == 0) by the given matrix in column-major format.
-inline __m128 colmajor_mat4x4_muldir_sse1(const __m128 *matrix, __m128 vector)
+inline __m128 colmajor_math::float4x4_muldir_sse1(const __m128 *matrix, __m128 vector)
 {
 	__m128 x = xxxx_ps(vector);
 	__m128 y = yyyy_ps(vector);
@@ -88,16 +88,16 @@ inline __m128 colmajor_mat4x4_muldir_sse1(const __m128 *matrix, __m128 vector)
 #endif
 
 /// Compute the product M*v, where M is a 4x4 matrix denoted by an array of 4 __m128's, and v is a 4x1 vector.
-inline __m128 mat4x4_mul_sse(const __m128 *matrix, __m128 vector)
+inline __m128 math::float4x4_mul_sse(const __m128 *matrix, __m128 vector)
 {
 // Disabled: The SSE 4.1 version has been profiled to be 2 clock cycles slower than the SSE 3 version.
 //#ifdef MATH_SSE41
-//	return mat4x4_mul_sse41(matrix, vector);
+//	return math::float4x4_mul_sse41(matrix, vector);
 
 #if defined(MATH_SSE3)
-	return mat4x4_mul_sse3(matrix, vector);
+	return math::float4x4_mul_sse3(matrix, vector);
 #else
-	return mat4x4_mul_sse1(matrix, vector);
+	return math::float4x4_mul_sse1(matrix, vector);
 #endif
 }
 
@@ -134,11 +134,11 @@ inline float3 mat3x4_mul_vec(const __m128 *matrix, __m128 vector)
 	row2 = _mm_movelh_ps(tmp1, tmp3); \
 	row3 = _mm_movehl_ps(tmp3, tmp1);
 
-FORCE_INLINE void mat4x4_mul_sse(__m128 *out, const __m128 *m1, const __m128 *m2)
+FORCE_INLINE void math::float4x4_mul_sse(__m128 *out, const __m128 *m1, const __m128 *m2)
 {
 #ifdef MATH_64BIT // In 64-bit, we have lots of SIMD registers, so use as many as possible.
 // 64-bit, SSE4.1:
-// Benchmark 'mat4x4_mul_sse': test against float4x4_op_mul
+// Benchmark 'math::float4x4_mul_sse': test against float4x4_op_mul
 //   Best: 5.354 nsecs / 17.144 ticks, Avg: 5.672 nsecs, Worst: 6.023 nsecs
 	__m128 m1_0 = m1[0];
 	__m128 m1_1 = m1[1];
@@ -166,7 +166,7 @@ FORCE_INLINE void mat4x4_mul_sse(__m128 *out, const __m128 *m1, const __m128 *m2
 	out[3] = add_ps(mul_ps(wwww_ps(m1_3), m), o4);
 #else // Targeting 32-bit, use as few registers as possible to avoid spilling.
 // 32-bit, SSE4.1:
-// Benchmark 'mat4x4_mul_sse': test against float4x4_op_mul
+// Benchmark 'math::float4x4_mul_sse': test against float4x4_op_mul
 //   Best: 6.692 nsecs / 21.34 ticks, Avg: 7.104 nsecs, Worst: 9.704 nsecs
 	out[0] = add_ps(add_ps(mul_ps(xxxx_ps(m1[0]), m2[0]), mul_ps(yyyy_ps(m1[0]), m2[1])), add_ps(mul_ps(zzzz_ps(m1[0]), m2[2]), mul_ps(wwww_ps(m1[0]), m2[3])));
 	out[1] = add_ps(add_ps(mul_ps(xxxx_ps(m1[1]), m2[0]), mul_ps(yyyy_ps(m1[1]), m2[1])), add_ps(mul_ps(zzzz_ps(m1[1]), m2[2]), mul_ps(wwww_ps(m1[1]), m2[3])));
@@ -202,7 +202,7 @@ inline void mat3x4_mul_sse(__m128 *out, const __m128 *m1, const __m128 *m2)
 // @param out A 4x4 matrix (4 x __m128)
 // @param m1 left-hand side matrix (4 x __m128)
 // @param m2 right-hand side matrix (3 x __m128)
-inline void mat4x4_mul_mat3x4_sse(__m128 *out, const __m128 *m1, const __m128 *m2)
+inline void math::float4x4_mul_mat3x4_sse(__m128 *out, const __m128 *m1, const __m128 *m2)
 {
 	const __m128 m2_3 = set_ps(1.f, 0.f, 0.f, 0.f);
 
@@ -235,7 +235,7 @@ inline void mat4x4_mul_mat3x4_sse(__m128 *out, const __m128 *m1, const __m128 *m
 // @param out A 4x4 matrix (4 x __m128)
 // @param m1 left-hand side matrix (3 x __m128)
 // @param m2 right-hand side matrix (4 x __m128)
-inline void mat3x4_mul_mat4x4_sse(__m128 *out, const __m128 *m1, const __m128 *m2)
+inline void mat3x4_mul_math::float4x4_sse(__m128 *out, const __m128 *m1, const __m128 *m2)
 {
 	__m128 s0 = xxxx_ps(m1[0]);
 	__m128 s1 = yyyy_ps(m1[0]);
@@ -274,7 +274,7 @@ inline void mat3x4_mul_mat4x4_sse(__m128 *out, const __m128 *m1, const __m128 *m
 // @param out A 4x4 matrix (4 x __m128)
 // @param m1 left-hand side matrix (3x3 floats)
 // @param m2 right-hand side matrix (4 x __m128)
-inline void mat3x3_mul_mat4x4_sse(__m128 *out, const float *m1, const __m128 *m2)
+inline void math::float3x3_mul_math::float4x4_sse(__m128 *out, const float *m1, const __m128 *m2)
 {
 	__m128 m1_0 = loadu_ps(m1);
 
@@ -310,11 +310,11 @@ inline void mat3x3_mul_mat4x4_sse(__m128 *out, const float *m1, const __m128 *m2
 // @param out A 4x4 matrix (4 x __m128)
 // @param m1 left-hand side matrix (4 x __m128)
 // @param m2 right-hand side matrix (3x3 floats)
-inline void mat4x4_mul_mat3x3_sse(__m128 *out, const __m128 *m1, const float *m2)
+inline void math::float4x4_mul_math::float3x3_sse(__m128 *out, const __m128 *m1, const float *m2)
 {
-	__m128 m2_0 = load_vec3(m2, 0.f);
-	__m128 m2_1 = load_vec3(m2+3, 0.f);
-	__m128 m2_2 = load_vec3(m2+6, 0.f);
+	__m128 m2_0 = load_math::float3(m2, 0.f);
+	__m128 m2_1 = load_math::float3(m2+3, 0.f);
+	__m128 m2_2 = load_math::float3(m2+6, 0.f);
 	const __m128 m2_3 = set_ps(1.f, 0.f, 0.f, 0.f);
 
 	__m128 s0 = xxxx_ps(m1[0]);
@@ -364,7 +364,7 @@ inline void mat4x4_mul_mat3x3_sse(__m128 *out, const __m128 *m1, const float *m2
 	        shuffle1_ps(_mm_shuffle_ps(mat[3], mat[2], _MM_SHUFFLE(i,i,i,i)), _MM_SHUFFLE(2,0,0,0)), \
 	        mul_ps(shuffle1_ps(_mm_shuffle_ps(mat[3], mat[2], _MM_SHUFFLE(j,j,j,j)), _MM_SHUFFLE(2,0,0,0)), \
 	               _mm_shuffle_ps(mat[2], mat[1], _MM_SHUFFLE(i,i,i,i))))
-FORCE_INLINE float mat4x4_inverse(const simd4f *mat, simd4f *out)
+FORCE_INLINE float math::float4x4_inverse(const simd4f *mat, simd4f *out)
 {
 	simd4f f1 = MAT_COFACTOR(mat, 3, 2);
 	simd4f f2 = MAT_COFACTOR(mat, 3, 1);
@@ -521,7 +521,7 @@ FORCE_INLINE void mat3x4_inverse_colorthogonal(const simd4f *mat, simd4f *out)
 
 #ifdef MATH_SIMD
 
-inline float mat4x4_determinant(const simd4f *row)
+inline float math::float4x4_determinant(const simd4f *row)
 {
 	simd4f s = xxxx_ps(rcp_ps(row[0]));
 	// row[0].x has a factor of the final determinant.

@@ -35,7 +35,7 @@ inline void quat_to_mat3x4(simd4f q, simd4f t, simd4f *m)
 	m[2] = _mm_movelh_ps(tmp1, tmp3);
 }
 
-FORCE_INLINE void quat_to_mat4x4(simd4f q, simd4f t, simd4f *m)
+FORCE_INLINE void quat_to_math::float4x4(simd4f q, simd4f t, simd4f *m)
 {
 	quat_to_mat3x4(q, t, m);
 	m[3] = set_ps(1.f, 0.f, 0.f, 0.f);
