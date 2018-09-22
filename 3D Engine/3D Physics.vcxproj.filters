@@ -40,6 +40,9 @@
     <Filter Include="Sources\Tools\MathGeoLib\Algorithm\Random">
       <UniqueIdentifier>{0954d6a2-d179-443b-9656-4cf227cdd885}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Sources\Tools\RNGpcg">
+      <UniqueIdentifier>{88bca4b4-5659-49e2-80bb-7b871b6de493}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Module.h">
@@ -281,6 +284,15 @@
     </ClInclude>
     <ClInclude Include="MathGeoLib\Algorithm\Random\LCG.h">
       <Filter>Sources\Tools\MathGeoLib\Algorithm\Random</Filter>
+    </ClInclude>
+    <ClInclude Include="RNGpcg\include\pcg_extras.hpp">
+      <Filter>Sources\Tools\RNGpcg</Filter>
+    </ClInclude>
+    <ClInclude Include="RNGpcg\include\pcg_random.hpp">
+      <Filter>Sources\Tools\RNGpcg</Filter>
+    </ClInclude>
+    <ClInclude Include="RNGpcg\include\pcg_uint128.hpp">
+      <Filter>Sources\Tools\RNGpcg</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
