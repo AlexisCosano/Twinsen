@@ -52,7 +52,7 @@ update_status ModuleSceneIntro::Update(float dt)
 	Plane p(0, 1, 0, 0);
 	p.axis = true;
 	p.Render();
-
+	
 	static bool show_test_window = false;
 	static bool quit = false;
 
@@ -77,6 +77,12 @@ update_status ModuleSceneIntro::Update(float dt)
 			ImGui::EndMenu();
 		}
 		
+		if (ImGui::BeginMenu("Window"))
+		{
+			ImGui::Checkbox("Show test window", &show_test_window);
+			ImGui::EndMenu();
+		}
+
 		ImGui::EndMainMenuBar();
 	}
 	
