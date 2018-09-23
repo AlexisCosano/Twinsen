@@ -140,6 +140,23 @@ update_status ModuleSceneIntro::Update(float dt)
 			ImGui::EndMenu();
 		}
 
+		if (ImGui::BeginMenu("RNG"))
+		{
+			ImGui::Text("Press to generate a random number between 0 and 100.");
+			
+			LCG random;
+			if (ImGui::Button("Generate"))
+			{
+				random_number = random.Int(0, 100);
+			}
+
+			ImGui::SameLine();
+			ImGui::Text("%i", random_number);
+			
+
+			ImGui::EndMenu();
+		}
+
 		ImGui::EndMainMenuBar();
 	}
 	

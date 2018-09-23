@@ -3,6 +3,8 @@
 #include "Globals.h"
 #include "MathGeoLib/Geometry/Sphere.h"
 #include "MathGeoLib/Math/float3.h"
+#include "MathGeoLib/Algorithm/Random/LCG.h"
+
 
 #define MAX_SNAKE 2
 
@@ -20,7 +22,7 @@ public:
 	update_status PreUpdate(float dt);
 	bool CleanUp();
 
-public:
-	
+private:
+	int random_number = 0;
 
 };

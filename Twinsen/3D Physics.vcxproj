@@ -151,9 +151,6 @@
     <ClInclude Include="ModuleInput.h" />
     <ClInclude Include="ModuleSceneIntro.h" />
     <ClInclude Include="ModuleWindow.h" />
-    <ClInclude Include="RNGpcg\include\pcg_extras.hpp" />
-    <ClInclude Include="RNGpcg\include\pcg_random.hpp" />
-    <ClInclude Include="RNGpcg\include\pcg_uint128.hpp" />
     <ClInclude Include="Timer.h" />
   </ItemGroup>
   <ItemGroup>
