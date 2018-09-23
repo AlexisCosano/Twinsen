@@ -24,7 +24,7 @@ bool ModuleSceneIntro::Start()
 	ImGui_ImplSdlGL3_Init(App->window->window);
 
 	App->camera->Move(math::float3(1.0f, 1.0f, 0.0f));
-	App->camera->LookAt(math::float3(0, 0, 0));
+	App->camera->LookAt(math::float3(0.0f, 0.0f, 0.0f));
 
 	return ret;
 }
@@ -80,6 +80,63 @@ update_status ModuleSceneIntro::Update(float dt)
 		if (ImGui::BeginMenu("Window"))
 		{
 			ImGui::Checkbox("Show test window", &show_test_window);
+			ImGui::EndMenu();
+		}
+
+		if (ImGui::BeginMenu("MathGeoLib testing"))
+		{
+			ImGui::Text("Sphere 1 position and radius: ");    ImGui::SameLine(250); ImGui::Text("(0, 0, 0) // 5");
+			ImGui::Text("Sphere 2 position and radius: ");    ImGui::SameLine(250); ImGui::Text("(12, 12, 12) // 5");
+
+			static int clicked1 = 0;
+
+			if (ImGui::Button("Check intersection"))
+				clicked1++;
+
+			if (clicked1 & 1)
+			{
+				math::Sphere sphere1(math::float3(0.0f, 0.0f, 0.0f), 5.0f);
+				math::Sphere sphere2(math::float3(12.0f, 12.0f, 12.0f), 5.0f);
+				
+
+				ImGui::SameLine();
+				if(sphere1.Intersects(sphere2))
+				{
+					ImGui::Text("The spheres intersect.");
+				}
+				else
+				{
+					ImGui::Text("The spheres do not intersect.");
+				}
+					
+			}
+
+			ImGui::Separator();
+
+			ImGui::Text("Sphere 1 position and radius: ");    ImGui::SameLine(250); ImGui::Text("(0, 0, 0) // 5");
+			ImGui::Text("Sphere 3 position and radius: ");    ImGui::SameLine(250); ImGui::Text("(4, 4, 4) // 5");
+
+			static int clicked2 = 0;
+
+			if (ImGui::Button("Check intersection 2"))
+				clicked2++;
+
+			if (clicked2 & 1)
+			{
+				math::Sphere sphere1(math::float3(0.0f, 0.0f, 0.0f), 5.0f);
+				math::Sphere sphere3(math::float3(4.0f, 4.0f, 4.0f), 5.0f);
+
+				ImGui::SameLine();
+				if (sphere1.Intersects(sphere3))
+				{
+					ImGui::Text("The spheres intersect.");
+				}
+				else
+				{
+					ImGui::Text("The spheres do not intersect.");
+				}
+			}
+
 			ImGui::EndMenu();
 		}
 

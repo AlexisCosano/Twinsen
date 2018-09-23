@@ -1,6 +1,8 @@
 #pragma once
 #include "Module.h"
 #include "Globals.h"
+#include "MathGeoLib/Geometry/Sphere.h"
+#include "MathGeoLib/Math/float3.h"
 
 #define MAX_SNAKE 2
 
@@ -19,5 +21,6 @@ public:
 	bool CleanUp();
 
 public:
+	
 
 };
