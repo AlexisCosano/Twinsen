@@ -39,7 +39,45 @@ update_status ModuleInterface::Update(float dt)
 		ImGui::TextWrapped("Twinsen Engine - by Alexis Cosano Rodriguez");
 		ImGui::Separator();
 		ImGui::TextWrapped("3D Game Engine created as a project for college.");
-		
+		ImGui::Separator();
+		ImGui::TextWrapped("Libraries used");
+		ImGui::Text("- ImGui  v1.52");
+		ImGui::SameLine();
+		if (ImGui::MenuItem("Download here"))
+		{
+			App->RequestBrowser("https://github.com/ocornut/imgui");
+		}
+		ImGui::Text("- Parson");
+		ImGui::SameLine();
+		if (ImGui::MenuItem("Download here"))
+		{
+			App->RequestBrowser("http://kgabis.github.com/parson/");
+		}
+
+		ImGui::Text("- MathGeoLib  v2.0");
+		ImGui::SameLine();
+		if (ImGui::MenuItem("Download here"))
+		{
+			App->RequestBrowser("https://github.com/juj/MathGeoLib");
+		}
+
+		ImGui::Text("- Glew  v7.0");
+		ImGui::SameLine();
+		if (ImGui::MenuItem("Download here"))
+		{
+			App->RequestBrowser("http://glew.sourceforge.net/");
+		}
+
+		ImGui::Text("- SDL  v2.0");
+		ImGui::SameLine();
+		if (ImGui::MenuItem("Download here"))
+		{
+			App->RequestBrowser("https://www.libsdl.org/download-2.0.php");
+		}
+		ImGui::Separator();
+		ImGui::Text("This engine is under the MIT license, to know more, click");
+		ImGui::SameLine(); if (ImGui::MenuItem("here.")) { App->RequestBrowser("https://opensource.org/about"); }
+
 		ImGui::End();
 	}
 	else
