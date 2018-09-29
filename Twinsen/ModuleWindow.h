@@ -20,6 +20,10 @@ public:
 
 	void SetTitle(const char* title);
 
+	// Save & load
+	bool Save();
+	bool Load();
+
 public:
 	//The window we'll be rendering to
 	SDL_Window* window;

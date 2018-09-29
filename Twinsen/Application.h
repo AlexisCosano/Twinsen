@@ -11,6 +11,7 @@
 #include "ModuleRenderer3D.h"
 #include "ModuleCamera3D.h"
 #include "ModuleInterface.h"
+#include "JSON/parson.h"
 
 
 class Application
@@ -39,6 +40,12 @@ public:
 	update_status Update();
 	bool CleanUp();
 	void RequestBrowser(const char* website_url);
+
+	// Call SaveGame -------------------------------------
+	void CallSave();
+
+	// Call LoadGame -------------------------------------
+	void CallLoad();
 
 private:
 

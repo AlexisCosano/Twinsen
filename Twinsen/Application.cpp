@@ -139,3 +139,30 @@ void Application::RequestBrowser(const char* website_url)
 {
 	ShellExecuteA(NULL, "open", website_url, NULL, NULL, 0);
 }
+
+// Save & Load ---------------------------
+void Application::CallSave()
+{
+	std::list<Module*>::iterator iterator = list_modules.begin();
+
+	while (iterator != list_modules.end())
+	{
+		iterator._Ptr->_Myval->Save();
+		iterator++;
+	}
+
+	LOG("Saving engine's configuration...");
+}
+
+void Application::CallLoad()
+{
+	std::list<Module*>::iterator iterator = list_modules.begin();
+
+	while (iterator != list_modules.end())
+	{
+		iterator._Ptr->_Myval->Load();
+		iterator++;
+	}
+
+	LOG("Loading engine's configuration...");
+}

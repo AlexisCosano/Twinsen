@@ -6,6 +6,7 @@ ModuleWindow::ModuleWindow(Application* app, bool start_enabled) : Module(app, s
 {
 	window = NULL;
 	screen_surface = NULL;
+	name.assign("window");
 }
 
 // Destructor
@@ -91,4 +92,28 @@ bool ModuleWindow::CleanUp()
 void ModuleWindow::SetTitle(const char* title)
 {
 	SDL_SetWindowTitle(window, title);
+}
+
+// Save & load ----------------------------------------------------------------------
+bool ModuleWindow::Save()
+{
+	/*
+	if (App->savefile_node.child(name.GetString()) == NULL)
+	{
+		App->savefile_node.append_child(name.GetString());
+		App->savefile_document.save_file("savefile.xml");
+	}
+	else
+	{
+		LOG("Nothing to save yet.");
+	}
+	*/
+	LOG("Saving module %s", name);
+	return(true);
+}
+
+bool ModuleWindow::Load()
+{
+	LOG("Loading module %s", name);
+	return(true);
 }
