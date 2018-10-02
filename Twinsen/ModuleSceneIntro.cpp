@@ -19,7 +19,17 @@ bool ModuleSceneIntro::Start()
 	LOG("Loading Intro assets");
 	bool ret = true;
 
+	glMatrixMode(GL_PROJECTION);
+	glLoadIdentity();
+
 	glewInit();
+
+	LOG("Using Glew %s", glewGetString(GLEW_VERSION));
+	LOG("Vendor: %s", glGetString(GL_VENDOR));
+	LOG("Renderer: %s", glGetString(GL_RENDERER));
+	LOG("OpenGL version supported: %s", glGetString(GL_VERSION));
+	LOG("GLSL: %s\n", glGetString(GL_SHADING_LANGUAGE_VERSION));
+
 	ImGui_ImplSdlGL3_Init(App->window->window);
 
 	App->camera->Move(math::float3(1.0f, 1.0f, 0.0f));
