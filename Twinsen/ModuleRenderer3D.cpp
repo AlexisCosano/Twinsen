@@ -10,6 +10,7 @@
 
 ModuleRenderer3D::ModuleRenderer3D(Application* app, bool start_enabled) : Module(app, start_enabled)
 {
+	name.assign("renderer");
 }
 
 // Destructor
@@ -33,7 +34,7 @@ bool ModuleRenderer3D::Init()
 	if(ret == true)
 	{
 		//Use Vsync
-		if(VSYNC && SDL_GL_SetSwapInterval(1) < 0)
+		if(App->window->wvsync && SDL_GL_SetSwapInterval(1) < 0)
 			LOG("Warning: Unable to set VSync! SDL Error: %s\n", SDL_GetError());
 
 		//Initialize Projection Matrix
@@ -97,7 +98,7 @@ bool ModuleRenderer3D::Init()
 	}
 
 	// Projection matrix for
-	OnResize(SCREEN_WIDTH, SCREEN_HEIGHT);
+	OnResize(App->window->wwidth, App->window->wwidth);
 
 	return ret;
 }
@@ -149,4 +150,28 @@ void ModuleRenderer3D::OnResize(int width, int height)
 
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
+}
+
+// Save & load ----------------------------------------------------------------------
+bool ModuleRenderer3D::Save()
+{
+	/*
+	if (App->savefile_node.child(name.GetString()) == NULL)
+	{
+	App->savefile_node.append_child(name.GetString());
+	App->savefile_document.save_file("savefile.xml");
+	}
+	else
+	{
+	LOG("Nothing to save yet.");
+	}
+	*/
+	LOG("Saving module %s", name._Get_data()._Myptr());
+	return(true);
+}
+
+bool ModuleRenderer3D::Load()
+{
+	LOG("Loading module %s", name._Get_data()._Myptr());
+	return(true);
 }

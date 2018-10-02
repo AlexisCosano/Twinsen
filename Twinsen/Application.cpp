@@ -43,6 +43,19 @@ bool Application::Init()
 {
 	bool ret = true;
 
+	config = json_parse_file("config.json");
+	
+	if (config != NULL)
+	{
+		modules_object = json_value_get_object(config);
+
+		LOG("Document loaded successfully.");
+	}
+	else
+	{
+		LOG("Document could not be loaded.");
+	}
+
 	// Call Init() in all modules
 	std::list<Module*>::iterator item = list_modules.begin();
 

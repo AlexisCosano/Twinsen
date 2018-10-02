@@ -5,7 +5,9 @@
 #pragma comment( lib, "SDL_mixer/libx86/SDL2_mixer.lib" )
 
 ModuleAudio::ModuleAudio(Application* app, bool start_enabled) : Module(app, start_enabled), music(NULL)
-{}
+{
+	name.assign("audio");
+}
 
 // Destructor
 ModuleAudio::~ModuleAudio()
@@ -155,4 +157,28 @@ bool ModuleAudio::PlayFx(unsigned int id, int repeat)
 	}
 	*/
 	return ret;
+}
+
+// Save & load ----------------------------------------------------------------------
+bool ModuleAudio::Save()
+{
+	/*
+	if (App->savefile_node.child(name.GetString()) == NULL)
+	{
+	App->savefile_node.append_child(name.GetString());
+	App->savefile_document.save_file("savefile.xml");
+	}
+	else
+	{
+	LOG("Nothing to save yet.");
+	}
+	*/
+	LOG("Saving module %s", name._Get_data()._Myptr());
+	return(true);
+}
+
+bool ModuleAudio::Load()
+{
+	LOG("Loading module %s", name._Get_data()._Myptr());
+	return(true);
 }

@@ -4,6 +4,8 @@
 
 ModuleCamera3D::ModuleCamera3D(Application* app, bool start_enabled) : Module(app, start_enabled)
 {
+	name.assign("camera");
+
 	CalculateViewMatrix();
 
 	X = math::float3(1.0f, 0.0f, 0.0f);
@@ -158,4 +160,28 @@ void ModuleCamera3D::CalculateViewMatrix()
 {
 	ViewMatrix = math::float4x4(X.x, Y.x, Z.x, 0.0f, X.y, Y.y, Z.y, 0.0f, X.z, Y.z, Z.z, 0.0f, -math::Dot(X, Position), -math::Dot(Y, Position), -math::Dot(Z, Position), 1.0f);
 	ViewMatrixInverse = math::float4x4(ViewMatrix).Inverted();
+}
+
+// Save & load ----------------------------------------------------------------------
+bool ModuleCamera3D::Save()
+{
+	/*
+	if (App->savefile_node.child(name.GetString()) == NULL)
+	{
+	App->savefile_node.append_child(name.GetString());
+	App->savefile_document.save_file("savefile.xml");
+	}
+	else
+	{
+	LOG("Nothing to save yet.");
+	}
+	*/
+	LOG("Saving module %s", name._Get_data()._Myptr());
+	return(true);
+}
+
+bool ModuleCamera3D::Load()
+{
+	LOG("Loading module %s", name._Get_data()._Myptr());
+	return(true);
 }

@@ -25,6 +25,9 @@ public:
 	ModuleCamera3D* camera;
 	ModuleInterface* ui;
 
+	JSON_Value *config;
+	JSON_Object *modules_object;
+
 private:
 
 	Timer	ms_timer;

@@ -6,6 +6,18 @@ ModuleWindow::ModuleWindow(Application* app, bool start_enabled) : Module(app, s
 {
 	window = NULL;
 	screen_surface = NULL;
+
+	//default variables in case config.xml is not loaded
+	window_title = "ERROR: window's title could not be loaded.";
+	wwidth = 1280;
+	wheight = 1024;
+	wscale = 1;
+	wfullscreen = false;
+	wresizable = true;
+	wborderless = false;
+	wwindowed_fullscreen = false;
+	wvsync = true;
+
 	name.assign("window");
 }
 
@@ -27,36 +39,54 @@ bool ModuleWindow::Init()
 	}
 	else
 	{
+		if (App->config != NULL)
+		{
+			window_object = json_object_dotget_object(App->modules_object, "window");
+
+			window_title = json_object_dotget_string(window_object, "title");
+			SetTitle(window_title);
+			LOG("Title: %s\n", window_title);
+
+			wwidth = json_object_dotget_number(window_object, "width");
+			wheight = json_object_dotget_number(window_object, "height");
+			wscale = json_object_dotget_number(window_object, "scale");
+			wfullscreen = json_object_dotget_boolean(window_object, "fullscreen");
+			wresizable = json_object_dotget_boolean(window_object, "resizable");
+			wborderless = json_object_dotget_boolean(window_object, "borderless");
+			wwindowed_fullscreen = json_object_dotget_boolean(window_object, "windowed_fullscreen");
+			wvsync = json_object_dotget_boolean(window_object, "vsync");
+		}
+
 		//Create window
-		int width = SCREEN_WIDTH * SCREEN_SIZE;
-		int height = SCREEN_HEIGHT * SCREEN_SIZE;
+		int width = wwidth * wscale;
+		int height = wheight * wscale;
 		Uint32 flags = SDL_WINDOW_OPENGL | SDL_WINDOW_SHOWN;
 
 		//Use OpenGL 2.1
 		SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 2);
 		SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 1);
 
-		if(WIN_FULLSCREEN == true)
+		if(wfullscreen == true)
 		{
 			flags |= SDL_WINDOW_FULLSCREEN;
 		}
 
-		if(WIN_RESIZABLE == true)
+		if(wresizable == true)
 		{
 			flags |= SDL_WINDOW_RESIZABLE;
 		}
 
-		if(WIN_BORDERLESS == true)
+		if(wborderless == true)
 		{
 			flags |= SDL_WINDOW_BORDERLESS;
 		}
 
-		if(WIN_FULLSCREEN_DESKTOP == true)
+		if(wwindowed_fullscreen == true)
 		{
 			flags |= SDL_WINDOW_FULLSCREEN_DESKTOP;
 		}
 
-		window = SDL_CreateWindow(TITLE, SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, width, height, flags);
+		window = SDL_CreateWindow(GetTitle(), SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, width, height, flags);
 
 		if(window == NULL)
 		{
@@ -94,6 +124,11 @@ void ModuleWindow::SetTitle(const char* title)
 	SDL_SetWindowTitle(window, title);
 }
 
+const char* ModuleWindow::GetTitle()
+{
+	return(window_title);
+}
+
 // Save & load ----------------------------------------------------------------------
 bool ModuleWindow::Save()
 {
@@ -108,12 +143,37 @@ bool ModuleWindow::Save()
 		LOG("Nothing to save yet.");
 	}
 	*/
-	LOG("Saving module %s", name);
+
+	if (json_object_has_value(App->modules_object, "window"))
+	{
+		json_object_set_number(window_object, "width", 1024);
+		json_serialize_to_file_pretty(App->config, "config.json");
+	}
+	LOG("Saving module %s", name._Get_data()._Myptr());
 	return(true);
 }
 
 bool ModuleWindow::Load()
 {
-	LOG("Loading module %s", name);
+	if (App->config != NULL)
+	{
+		window_title = json_object_dotget_string(window_object, "title");
+
+		wwidth = json_object_dotget_number(window_object, "width");
+		wheight = json_object_dotget_number(window_object, "height");
+		wscale = json_object_dotget_number(window_object, "scale");
+		wfullscreen = json_object_dotget_boolean(window_object, "fullscreen");
+		wresizable = json_object_dotget_boolean(window_object, "resizable");
+		wborderless = json_object_dotget_boolean(window_object, "borderless");
+		wwindowed_fullscreen = json_object_dotget_boolean(window_object, "windowed_fullscreen");
+		wvsync = json_object_dotget_boolean(window_object, "vsync");
+
+		LOG("Loading module %s", name._Get_data()._Myptr());
+	}
+	else
+	{
+		LOG("Document not found.");
+	}
+	
 	return(true);
 }

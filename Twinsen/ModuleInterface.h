@@ -22,5 +22,9 @@ public:
 	update_status Update(float dt);
 	bool CleanUp();
 
+	// Save & load
+	bool Save();
+	bool Load();
+
 };
 #endif

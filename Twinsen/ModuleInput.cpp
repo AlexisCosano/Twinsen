@@ -6,6 +6,8 @@
 
 ModuleInput::ModuleInput(Application* app, bool start_enabled) : Module(app, start_enabled)
 {
+	name.assign("input");
+
 	keyboard = new KEY_STATE[MAX_KEYS];
 	memset(keyboard, KEY_IDLE, sizeof(KEY_STATE) * MAX_KEYS);
 	memset(mouse_buttons, KEY_IDLE, sizeof(KEY_STATE) * MAX_MOUSE_BUTTONS);
@@ -28,6 +30,13 @@ bool ModuleInput::Init()
 	{
 		LOG("SDL_EVENTS could not initialize! SDL_Error: %s\n", SDL_GetError());
 		ret = false;
+	}
+	else
+	{
+		if (App->config != NULL)
+		{
+			input_object = json_object_dotget_object(App->modules_object, "input");
+		}
 	}
 
 	return ret;
@@ -60,8 +69,8 @@ update_status ModuleInput::PreUpdate(float dt)
 
 	Uint32 buttons = SDL_GetMouseState(&mouse_x, &mouse_y);
 
-	mouse_x /= SCREEN_SIZE;
-	mouse_y /= SCREEN_SIZE;
+	mouse_x /= App->window->wscale;
+	mouse_y /= App->window->wscale;
 	mouse_z = 0;
 
 	for(int i = 0; i < 5; ++i)
@@ -95,11 +104,11 @@ update_status ModuleInput::PreUpdate(float dt)
 			break;
 
 			case SDL_MOUSEMOTION:
-			mouse_x = e.motion.x / SCREEN_SIZE;
-			mouse_y = e.motion.y / SCREEN_SIZE;
+			mouse_x = e.motion.x / App->window->wscale;
+			mouse_y = e.motion.y / App->window->wscale;
 
-			mouse_x_motion = e.motion.xrel / SCREEN_SIZE;
-			mouse_y_motion = e.motion.yrel / SCREEN_SIZE;
+			mouse_x_motion = e.motion.xrel / App->window->wscale;
+			mouse_y_motion = e.motion.yrel / App->window->wscale;
 			break;
 
 			case SDL_QUIT:
@@ -133,4 +142,37 @@ bool ModuleInput::CleanUp()
 	LOG("Quitting SDL input event subsystem");
 	SDL_QuitSubSystem(SDL_INIT_EVENTS);
 	return true;
+}
+
+// Save & load ----------------------------------------------------------------------
+bool ModuleInput::Save()
+{
+	/*
+	if (App->savefile_node.child(name.GetString()) == NULL)
+	{
+	App->savefile_node.append_child(name.GetString());
+	App->savefile_document.save_file("savefile.xml");
+	}
+	else
+	{
+	LOG("Nothing to save yet.");
+	}
+	*/
+	if (App->config != NULL)
+	{
+		if (json_object_has_value(App->modules_object, "input") == false)
+		{
+			json_object_dotset_string(App->modules_object, "input.city", "Cupertino"); // input { "city":" Cupertino"}
+			json_serialize_to_file_pretty(App->config, "config.json");
+		}
+	}
+
+	LOG("Saving module %s", name._Get_data()._Myptr());
+	return(true);
+}
+
+bool ModuleInput::Load()
+{
+	LOG("Loading module %s", name._Get_data()._Myptr());
+	return(true);
 }

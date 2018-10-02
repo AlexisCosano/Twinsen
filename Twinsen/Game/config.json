@@ -1,31 +1,17 @@
-{"config":[
-	{"audio":[
-	
-	
-	]}
-
-	{"camera":[
-	
-	
-	]}
-	
-	{"input":[
-	
-	
-	]}
-	
-	{"interface":[
-	
-	
-	]}
-	
-	{"renderer":[
-	
-	
-	]}
-	
-	{"window":[
-	
-	
-	]}
-]}
+{
+    "audio": {},
+    "camera": {},
+    "interface": {},
+    "renderer": {},
+    "window": {
+        "title": "Twinsen",
+        "width": 1024,
+        "height": 768,
+        "scale": 1,
+        "fullscreen": false,
+        "resizable": true,
+        "borderless": false,
+        "windowed_fullscreen": false,
+        "vsync": true
+    }
+}

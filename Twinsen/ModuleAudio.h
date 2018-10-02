@@ -24,6 +24,10 @@ public:
 
 	// Play a previously loaded WAV
 	bool PlayFx(unsigned int fx, int repeat = 0);
+	
+	// Save & load
+	bool Save();
+	bool Load();
 
 private:
 

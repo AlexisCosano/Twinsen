@@ -21,6 +21,9 @@ public:
 	void Move(const math::float3 &Movement);
 	float* GetViewMatrix();
 
+	// Save & load
+	bool Save();
+	bool Load();
 private:
 
 	void CalculateViewMatrix();

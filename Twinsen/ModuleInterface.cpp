@@ -4,14 +4,16 @@
 
 #pragma comment( lib, "Glew/libx86/glew32.lib" )
 
-ModuleInterface::ModuleInterface(Application* app, bool start_enabled) : Module(app, start_enabled){}
+ModuleInterface::ModuleInterface(Application* app, bool start_enabled) : Module(app, start_enabled)
+{
+	name.assign("interface");
+}
 
 ModuleInterface::~ModuleInterface(){}
 
 // -----------------------------------------------------------------
 bool ModuleInterface::Start()
 {
-	LOG("Setting up the camera");
 	bool ret = true;
 
 	return ret;
@@ -91,8 +93,16 @@ update_status ModuleInterface::Update(float dt)
 		{
 			ImGui::Text("New file");
 			ImGui::Text("Open file");
-			ImGui::Separator();
 			ImGui::Text("Save file");
+			ImGui::Separator();
+			if (ImGui::MenuItem("Save engine configuration"))
+			{
+				App->CallSave();
+			}
+			if (ImGui::MenuItem("Load engine configuration"))
+			{
+				App->CallLoad();
+			}
 			ImGui::Separator();
 			if (ImGui::MenuItem("Exit"))
 			{
@@ -209,4 +219,28 @@ bool ModuleInterface::CleanUp()
 	LOG("Cleaning camera");
 
 	return true;
+}
+
+// Save & load ----------------------------------------------------------------------
+bool ModuleInterface::Save()
+{
+	/*
+	if (App->savefile_node.child(name.GetString()) == NULL)
+	{
+	App->savefile_node.append_child(name.GetString());
+	App->savefile_document.save_file("savefile.xml");
+	}
+	else
+	{
+	LOG("Nothing to save yet.");
+	}
+	*/
+	LOG("Saving module %s", name._Get_data()._Myptr());
+	return(true);
+}
+
+bool ModuleInterface::Load()
+{
+	LOG("Loading module %s", name._Get_data()._Myptr());
+	return(true);
 }
