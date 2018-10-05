@@ -1,5 +1,6 @@
 #include "Application.h"
 #include "ModuleInterface.h"
+#include "imGUI\imgui_impl_sdl_gl3.h"
 #include "Glew\include\glew.h"
 
 #pragma comment( lib, "Glew/libx86/glew32.lib" )
@@ -16,7 +17,21 @@ bool ModuleInterface::Start()
 {
 	bool ret = true;
 
+	glMatrixMode(GL_PROJECTION);
+	glLoadIdentity();
+
+	glewInit();
+
+	ImGui_ImplSdlGL3_Init(App->window->window);
+
 	return ret;
+}
+
+// Pre update -------------------------------------------------------
+update_status ModuleInterface::PreUpdate(float dt)
+{
+	ImGui_ImplSdlGL3_NewFrame(App->window->window);
+	return(UPDATE_CONTINUE);
 }
 
 // ------------------------------------------------------------------
@@ -24,6 +39,7 @@ update_status ModuleInterface::Update(float dt)
 {
 	static bool show_test_window = false;
 	static bool show_about_window = false;
+	static bool show_opengl_window = false;
 	static bool quit = false;
 
 	if (show_test_window)
@@ -31,12 +47,26 @@ update_status ModuleInterface::Update(float dt)
 		ImGui::ShowTestWindow();
 	}
 
+	if (show_opengl_window)
+	{
+		ImGui::Begin("User's information");
+		ImGui::SetNextWindowSize(ImVec2(520, 600), ImGuiCond_FirstUseEver);
+
+		ImGui::Text("Glew version: %s", glewGetString(GLEW_VERSION));
+		ImGui::Separator();
+		ImGui::Text("Vendor: %s", glGetString(GL_VENDOR));
+		ImGui::Text("Renderer: %s", glGetString(GL_RENDERER));
+		ImGui::Text("OpenGL version supported: %s", glGetString(GL_VERSION));
+		ImGui::Text("GLSL: %s\n", glGetString(GL_SHADING_LANGUAGE_VERSION));
+
+		ImGui::End();
+	}
+
 	if (show_about_window)
 	{
 		ImGui::Begin("About");
 
 		ImGui::SetNextWindowSize(ImVec2(520, 600), ImGuiCond_FirstUseEver);
-		static bool show_application = false;
 
 		ImGui::TextWrapped("Twinsen Engine - by Alexis Cosano Rodriguez");
 		ImGui::Separator();
@@ -111,6 +141,43 @@ update_status ModuleInterface::Update(float dt)
 			ImGui::EndMenu();
 		}
 
+		if (ImGui::BeginMenu("Renderer options"))
+		{
+			if (ImGui::MenuItem("Depth test"))
+			{
+				GL_DEPTH_TEST;
+			}
+
+			if (ImGui::MenuItem("Cull face"))
+			{
+				GL_CULL_FACE;
+			}
+
+			if (ImGui::MenuItem("Lighting"))
+			{
+				GL_LIGHTING;
+			}
+
+			if (ImGui::MenuItem("Color material"))
+			{
+				GL_COLOR_MATERIAL;
+			}
+
+			if (ImGui::MenuItem("Texture 2"))
+			{
+				GL_TEXTURE_2D;
+			}
+
+			ImGui::Separator();
+
+			if (ImGui::MenuItem("Wireframe mode"))
+			{
+				glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+			}
+
+			ImGui::EndMenu();
+		}
+
 		if (ImGui::BeginMenu("Help"))
 		{
 			ImGui::Checkbox("Show test window", &show_test_window);
@@ -127,6 +194,7 @@ update_status ModuleInterface::Update(float dt)
 				App->RequestBrowser("https://github.com/AlexisCosano/Twinsen/issues");
 			
 			ImGui::Checkbox("About", &show_about_window);
+			ImGui::Checkbox("User's information", &show_opengl_window);
 				
 			ImGui::EndMenu();
 		}
@@ -217,6 +285,8 @@ update_status ModuleInterface::Update(float dt)
 bool ModuleInterface::CleanUp()
 {
 	LOG("Cleaning camera");
+
+	ImGui_ImplSdlGL3_Shutdown();
 
 	return true;
 }

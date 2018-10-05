@@ -19,6 +19,7 @@ public:
 	~ModuleInterface();
 
 	bool Start();
+	update_status PreUpdate(float dt);
 	update_status Update(float dt);
 	bool CleanUp();
 

@@ -13,5 +13,8 @@
         "borderless": false,
         "windowed_fullscreen": false,
         "vsync": true
+    },
+    "input": {
+        "city": "Cupertino"
     }
 }
