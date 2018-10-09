@@ -19,6 +19,8 @@ bool ModuleSceneIntro::Start()
 	App->camera->Move(math::float3(1.0f, 1.0f, 0.0f));
 	App->camera->LookAt(math::float3(0.0f, 0.0f, 0.0f));
 
+	App->fbx_loader->LoadFile("Models/warrior.fbx");
+
 	return ret;
 }
 

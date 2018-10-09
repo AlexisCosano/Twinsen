@@ -6,6 +6,8 @@
 #include "Light.h"
 
 #define MAX_LIGHTS 8
+struct MeshData;
+
 
 class ModuleRenderer3D : public Module
 {
@@ -15,12 +17,14 @@ public:
 
 	bool Init();
 	update_status PreUpdate(float dt);
+	update_status Update(float dt);
 	update_status PostUpdate(float dt);
 	bool CleanUp();
 
 	void OnResize(int width, int height);
 
 	void DrawCube();
+	void DrawFBX(const MeshData& mesh_to_draw);
 
 	// Save & load
 	bool Save();

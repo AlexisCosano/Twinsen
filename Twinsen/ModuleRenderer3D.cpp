@@ -121,6 +121,17 @@ update_status ModuleRenderer3D::PreUpdate(float dt)
 	return UPDATE_CONTINUE;
 }
 
+// Update
+update_status ModuleRenderer3D::Update(float dt)
+{
+	for (std::vector<MeshData>::iterator iterator = App->fbx_loader->meshes.begin(); iterator != App->fbx_loader->meshes.end(); ++iterator)
+	{
+		DrawFBX(*iterator);
+	}
+	
+	return (UPDATE_CONTINUE);
+}
+
 // PostUpdate present buffer to screen
 update_status ModuleRenderer3D::PostUpdate(float dt)
 {
@@ -158,6 +169,19 @@ void ModuleRenderer3D::DrawCube()
 
 }
 */
+
+void ModuleRenderer3D::DrawFBX(const MeshData& mesh_to_draw)
+{
+	glEnableClientState(GL_VERTEX_ARRAY);
+
+	glBindBuffer(GL_ARRAY_BUFFER, mesh_to_draw.id_vertex);
+	glVertexPointer(3, GL_FLOAT, 0, NULL);
+
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, mesh_to_draw.id_index);
+	glDrawElements(GL_TRIANGLES, mesh_to_draw.num_index, GL_UNSIGNED_INT, NULL);
+
+	glDisableClientState(GL_VERTEX_ARRAY);
+}
 
 // Save & load ----------------------------------------------------------------------
 bool ModuleRenderer3D::Save()
