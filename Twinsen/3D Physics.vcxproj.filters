@@ -285,6 +285,9 @@
     <ClInclude Include="JSON\parson.h">
       <Filter>Sources\Tools\JSON</Filter>
     </ClInclude>
+    <ClInclude Include="ModuleFBXLoader.h">
+      <Filter>Sources\Modules</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="ModuleAudio.cpp">
@@ -448,6 +451,9 @@
     </ClCompile>
     <ClCompile Include="JSON\parson.c">
       <Filter>Sources\Tools\JSON</Filter>
+    </ClCompile>
+    <ClCompile Include="ModuleFBXLoader.cpp">
+      <Filter>Sources\Modules</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

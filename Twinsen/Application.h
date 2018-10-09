@@ -11,6 +11,7 @@
 #include "ModuleRenderer3D.h"
 #include "ModuleCamera3D.h"
 #include "ModuleInterface.h"
+#include "ModuleFBXLoader.h"
 #include "JSON/parson.h"
 
 
@@ -24,6 +25,7 @@ public:
 	ModuleRenderer3D* renderer3D;
 	ModuleCamera3D* camera;
 	ModuleInterface* ui;
+	ModuleFBXLoader* fbx_loader;
 
 	JSON_Value *config;
 	JSON_Object *modules_object;

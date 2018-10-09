@@ -284,7 +284,7 @@ update_status ModuleInterface::Update(float dt)
 // ------------------------------------------------------------------
 bool ModuleInterface::CleanUp()
 {
-	LOG("Cleaning camera");
+	LOG("Cleaning interface");
 
 	ImGui_ImplSdlGL3_Shutdown();
 
