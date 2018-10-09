@@ -20,6 +20,8 @@ public:
 
 	void OnResize(int width, int height);
 
+	void DrawCube();
+
 	// Save & load
 	bool Save();
 	bool Load();

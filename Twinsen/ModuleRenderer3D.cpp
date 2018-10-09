@@ -152,6 +152,13 @@ void ModuleRenderer3D::OnResize(int width, int height)
 	glLoadIdentity();
 }
 
+/*
+void ModuleRenderer3D::DrawCube()
+{
+
+}
+*/
+
 // Save & load ----------------------------------------------------------------------
 bool ModuleRenderer3D::Save()
 {
