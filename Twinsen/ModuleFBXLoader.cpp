@@ -4,8 +4,13 @@
 #include "Assimp/include/scene.h"
 #include "Assimp/include/postprocess.h"
 #include "Assimp/include/cfileio.h"
+#include "Devil/include/il.h"
+#include "Devil/include/ilut.h"
 
-#pragma comment (lib, "Assimp/libx86/assimp.lib");
+#pragma comment (lib, "Assimp/libx86/assimp.lib")
+#pragma comment (lib, "Devil/libx86/DevIL.lib")
+#pragma comment (lib, "Devil/libx86/ILU.lib")
+#pragma comment (lib, "Devil/libx86/ILUT.lib")
 
 
 ModuleFBXLoader::ModuleFBXLoader(Application* app, bool start_enabled) : Module(app, start_enabled)
@@ -19,6 +24,10 @@ ModuleFBXLoader::~ModuleFBXLoader() {}
 bool ModuleFBXLoader::Start()
 {
 	bool ret = true;
+
+	ilInit();
+	ilutInit();
+	ilutRenderer(ILUT_OPENGL);
 
 	struct aiLogStream stream;
 	stream = aiGetPredefinedLogStream(aiDefaultLogStream_DEBUGGER, nullptr);
