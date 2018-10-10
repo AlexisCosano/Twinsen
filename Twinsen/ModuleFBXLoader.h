@@ -6,6 +6,8 @@
 #include "glew\include\glew.h"
 #include <vector>
 
+struct aiScene;
+struct aiNode;
 
 struct MeshData
 {
@@ -15,7 +17,7 @@ struct MeshData
 
 	uint id_vertex = 0;
 	uint num_vertex = 0;
-	float* vertex = nullptr;
+	uint* vertex = nullptr;
 };
 
 class ModuleFBXLoader : public Module
@@ -38,6 +40,7 @@ public:
 	bool CleanUp();
 
 	void LoadFile(const char* file_path);
+	void LoadMesh(const aiScene* scene, aiNode* children_node);
 
 	// Save & load
 	bool Save();

@@ -13,7 +13,7 @@ ModuleInterface::ModuleInterface(Application* app, bool start_enabled) : Module(
 ModuleInterface::~ModuleInterface(){}
 
 // -----------------------------------------------------------------
-bool ModuleInterface::Start()
+bool ModuleInterface::Init()
 {
 	bool ret = true;
 

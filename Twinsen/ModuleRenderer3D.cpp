@@ -22,84 +22,93 @@ bool ModuleRenderer3D::Init()
 {
 	LOG("Creating 3D Renderer context");
 	bool ret = true;
-	
-	//Create context
-	context = SDL_GL_CreateContext(App->window->window);
-	if(context == NULL)
+
+	if (SDL_Init(SDL_INIT_VIDEO) < 0)
 	{
-		LOG("OpenGL context could not be created! SDL_Error: %s\n", SDL_GetError());
+		LOG("SDL_VIDEO could not initialize! SDL_Error: %s\n", SDL_GetError());
 		ret = false;
 	}
-	
-	if(ret == true)
+	else 
 	{
-		//Use Vsync
-		if(App->window->wvsync && SDL_GL_SetSwapInterval(1) < 0)
-			LOG("Warning: Unable to set VSync! SDL Error: %s\n", SDL_GetError());
-
-		//Initialize Projection Matrix
-		glMatrixMode(GL_PROJECTION);
-		glLoadIdentity();
-
-		//Check for error
-		GLenum error = glGetError();
-		if(error != GL_NO_ERROR)
+		//Create context
+		context = SDL_GL_CreateContext(App->window->window);
+		if (context == NULL)
 		{
-			LOG("Error initializing OpenGL! %s\n", gluErrorString(error));
+			LOG("OpenGL context could not be created! SDL_Error: %s\n", SDL_GetError());
 			ret = false;
 		}
 
-		//Initialize Modelview Matrix
-		glMatrixMode(GL_MODELVIEW);
-		glLoadIdentity();
-
-		//Check for error
-		error = glGetError();
-		if(error != GL_NO_ERROR)
+		if (ret == true)
 		{
-			LOG("Error initializing OpenGL! %s\n", gluErrorString(error));
-			ret = false;
-		}
-		
-		glHint(GL_PERSPECTIVE_CORRECTION_HINT, GL_NICEST);
-		glClearDepth(1.0f);
-		
-		//Initialize clear color
-		glClearColor(0.f, 0.f, 0.f, 1.f);
+			//Use Vsync
+			if (App->window->wvsync && SDL_GL_SetSwapInterval(1) < 0)
+				LOG("Warning: Unable to set VSync! SDL Error: %s\n", SDL_GetError());
 
-		//Check for error
-		error = glGetError();
-		if(error != GL_NO_ERROR)
-		{
-			LOG("Error initializing OpenGL! %s\n", gluErrorString(error));
-			ret = false;
-		}
-		
-		GLfloat LightModelAmbient[] = {0.0f, 0.0f, 0.0f, 1.0f};
-		glLightModelfv(GL_LIGHT_MODEL_AMBIENT, LightModelAmbient);
-		
-		lights[0].ref = GL_LIGHT0;
-		lights[0].ambient.Set(0.25f, 0.25f, 0.25f, 1.0f);
-		lights[0].diffuse.Set(0.75f, 0.75f, 0.75f, 1.0f);
-		lights[0].SetPos(0.0f, 0.0f, 2.5f);
-		lights[0].Init();
-		
-		GLfloat MaterialAmbient[] = {1.0f, 1.0f, 1.0f, 1.0f};
-		glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT, MaterialAmbient);
+			//Initialize Projection Matrix
+			glMatrixMode(GL_PROJECTION);
+			glLoadIdentity();
 
-		GLfloat MaterialDiffuse[] = {1.0f, 1.0f, 1.0f, 1.0f};
-		glMaterialfv(GL_FRONT_AND_BACK, GL_DIFFUSE, MaterialDiffuse);
-		
-		glEnable(GL_DEPTH_TEST);
-		glEnable(GL_CULL_FACE);
-		lights[0].Active(true);
-		glEnable(GL_LIGHTING);
-		glEnable(GL_COLOR_MATERIAL);
+			//Check for error
+			GLenum error = glGetError();
+			if (error != GL_NO_ERROR)
+			{
+				LOG("Error initializing OpenGL! %s\n", gluErrorString(error));
+				ret = false;
+			}
+
+			//Initialize Modelview Matrix
+			glMatrixMode(GL_MODELVIEW);
+			glLoadIdentity();
+
+			//Check for error
+			error = glGetError();
+			if (error != GL_NO_ERROR)
+			{
+				LOG("Error initializing OpenGL! %s\n", gluErrorString(error));
+				ret = false;
+			}
+
+			glHint(GL_PERSPECTIVE_CORRECTION_HINT, GL_NICEST);
+			glClearDepth(1.0f);
+
+			//Initialize clear color
+			glClearColor(0.f, 0.f, 0.f, 1.f);
+
+			//Check for error
+			error = glGetError();
+			if (error != GL_NO_ERROR)
+			{
+				LOG("Error initializing OpenGL! %s\n", gluErrorString(error));
+				ret = false;
+			}
+
+			//Light
+			GLfloat light_mode[] = { 0.0f, 0.0f, 0.0f, 1.0f };
+			glLightModelfv(GL_LIGHT_MODEL_AMBIENT, light_mode);
+
+			lights[0].ref = GL_LIGHT0;
+			lights[0].diffuse.Set(0.5f, 0.5f, 0.5f, 1.0f);
+			lights[0].ambient.Set(0.5f, 0.5f, 0.5f, 1.0f);
+			lights[0].SetPos(0.0f, 0.5f, 0.0f);
+			lights[0].Init();
+
+			//Materials
+			GLfloat ambient_material[] = { 1.0f, 1.0f, 1.0f, 1.0f };
+			glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT, ambient_material);
+
+			GLfloat diffuse_material[] = { 1.0f, 1.0f, 1.0f, 1.0f };
+			glMaterialfv(GL_FRONT_AND_BACK, GL_DIFFUSE, diffuse_material);
+
+			glEnable(GL_COLOR_MATERIAL);
+			glEnable(GL_DEPTH_TEST);
+			glDisable(GL_CULL_FACE);
+			glDisable(GL_LIGHTING);
+			lights[0].Active(true);			
+		}
+
+		// Projection matrix for
+		OnResize(App->window->wwidth, App->window->wheight);
 	}
-
-	// Projection matrix for
-	OnResize(App->window->wwidth, App->window->wwidth);
-
 	return ret;
 }
 
@@ -173,7 +182,7 @@ void ModuleRenderer3D::DrawCube()
 void ModuleRenderer3D::DrawFBX(const MeshData& mesh_to_draw)
 {
 	glEnableClientState(GL_VERTEX_ARRAY);
-
+	
 	glBindBuffer(GL_ARRAY_BUFFER, mesh_to_draw.id_vertex);
 	glVertexPointer(3, GL_FLOAT, 0, NULL);
 

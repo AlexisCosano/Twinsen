@@ -18,7 +18,7 @@ public:
 	ModuleInterface(Application* app, bool start_enabled = true);
 	~ModuleInterface();
 
-	bool Start();
+	bool Init();
 	update_status PreUpdate(float dt);
 	update_status Update(float dt);
 	bool CleanUp();

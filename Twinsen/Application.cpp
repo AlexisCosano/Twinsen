@@ -22,12 +22,14 @@ Application::Application()
 	AddModule(audio);
 	
 	// Scenes
-	AddModule(scene_intro);
 	AddModule(fbx_loader);
-	AddModule(ui);
+	AddModule(scene_intro);
 	
 	// Renderer last!
 	AddModule(renderer3D);
+
+	// Interface
+	AddModule(ui);
 }
 
 Application::~Application()
