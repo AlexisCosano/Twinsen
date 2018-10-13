@@ -44,18 +44,28 @@ update_status ModuleCamera3D::Update(float dt)
 
 	math::float3 newPos(0, 0, 0);
 	float speed = 3.0f * dt;
+
 	if (App->input->GetKey(SDL_SCANCODE_LSHIFT) == KEY_REPEAT)
 		speed = 8.0f * dt;
 
-	if (App->input->GetKey(SDL_SCANCODE_R) == KEY_REPEAT) newPos.y += speed;
-	if (App->input->GetKey(SDL_SCANCODE_F) == KEY_REPEAT) newPos.y -= speed;
+	if (App->input->GetKey(SDL_SCANCODE_R) == KEY_REPEAT) newPos.y += speed * dt;
+	if (App->input->GetKey(SDL_SCANCODE_F) == KEY_REPEAT) newPos.y -= speed * dt;
 
-	if (App->input->GetKey(SDL_SCANCODE_W) == KEY_REPEAT) newPos -= Z * speed;
-	if (App->input->GetKey(SDL_SCANCODE_S) == KEY_REPEAT) newPos += Z * speed;
+	if (App->input->GetKey(SDL_SCANCODE_W) == KEY_REPEAT) newPos -= Z * speed * dt;
+	if (App->input->GetKey(SDL_SCANCODE_S) == KEY_REPEAT) newPos += Z * speed * dt;
 
 
-	if (App->input->GetKey(SDL_SCANCODE_A) == KEY_REPEAT) newPos -= X * speed;
-	if (App->input->GetKey(SDL_SCANCODE_D) == KEY_REPEAT) newPos += X * speed;
+	if (App->input->GetKey(SDL_SCANCODE_A) == KEY_REPEAT) newPos -= X * speed * dt;
+	if (App->input->GetKey(SDL_SCANCODE_D) == KEY_REPEAT) newPos += X * speed * dt;
+
+	if (App->input->GetMouseZ() == -1)
+	{
+		newPos += Z * speed * 5 * dt;
+	}
+	else if (App->input->GetMouseZ() == 1)
+	{
+			newPos -= Z * speed * 5 * dt;
+	}
 
 	Position += newPos;
 	Reference += newPos;
@@ -71,22 +81,21 @@ update_status ModuleCamera3D::Update(float dt)
 
 		Position -= Reference;
 
-		
 		if (dx != 0)
 		{
 			float DeltaX = (float)dx * Sensitivity;
 
-			X = RotateFloat3(X, DeltaX, math::float3(0.0f, 1.0f, 0.0f));
-			Y = RotateFloat3(Y, DeltaX, math::float3(0.0f, 1.0f, 0.0f));
-			Z = RotateFloat3(Z, DeltaX, math::float3(0.0f, 1.0f, 0.0f));			
+			X = math::RotateFloat3(X, DeltaX, math::float3(0.0f, 1.0f, 0.0f));
+			Y = math::RotateFloat3(Y, DeltaX, math::float3(0.0f, 1.0f, 0.0f));
+			Z = math::RotateFloat3(Z, DeltaX, math::float3(0.0f, 1.0f, 0.0f));
 		}
 		
 		if (dy != 0)
 		{
 			float DeltaY = (float)dy * Sensitivity;
 
-			Y = RotateFloat3(Y, DeltaY, X);
-			Z = RotateFloat3(Z, DeltaY, X);
+			Y = math::RotateFloat3(Y, DeltaY, X);
+			Z = math::RotateFloat3(Z, DeltaY, X);
 
 			if (Y.y < 0.0f)
 			{

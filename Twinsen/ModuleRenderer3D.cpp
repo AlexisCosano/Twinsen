@@ -118,7 +118,7 @@ update_status ModuleRenderer3D::PreUpdate(float dt)
 	glLoadIdentity();
 
 	glMatrixMode(GL_MODELVIEW);
-	//glLoadMatrixf(App->camera->GetViewMatrix());
+	//glLoadMatrixf((GLfloat*)App->camera->GetViewMatrix());
 
 	// light 0 on cam pos
 	lights[0].SetPos(App->camera->Position.x, App->camera->Position.y, App->camera->Position.z);
@@ -164,8 +164,11 @@ void ModuleRenderer3D::OnResize(int width, int height)
 
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
-	//ProjectionMatrix = (60.0f, (float)width / (float)height, 0.125f, 512.0f).Inverted();
-	//glLoadMatrixf(&ProjectionMatrix);
+
+	//ProjectionMatrix = float4x4(60.0f, (float)width / (float)height, 0.125f, 512.0f);
+	//ProjectionMatrix = math::float4x4(0.0f, 0.0f, 0.0f, 0.0f);
+
+	//glLoadMatrixf((GLfloat*)&ProjectionMatrix);
 
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
@@ -178,7 +181,7 @@ void ModuleRenderer3D::DrawCube()
 }
 */
 
-void ModuleRenderer3D::DrawFBX(const MeshData& mesh_to_draw)
+void ModuleRenderer3D::DrawFBX(MeshData mesh_to_draw)
 {
 	glEnableClientState(GL_VERTEX_ARRAY);
 	glEnableClientState(GL_TEXTURE_COORD_ARRAY);

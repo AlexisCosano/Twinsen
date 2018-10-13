@@ -24,7 +24,7 @@ public:
 	void OnResize(int width, int height);
 
 	void DrawCube();
-	void DrawFBX(const MeshData& mesh_to_draw);
+	void DrawFBX(MeshData mesh_to_draw);
 
 	// Save & load
 	bool Save();

@@ -5,6 +5,8 @@
 #include "Globals.h"
 #include "glew\include\glew.h"
 #include <vector>
+#include <string>
+
 
 struct aiScene;
 struct aiNode;
@@ -23,11 +25,11 @@ struct MeshData
 
 	uint id_normals = 0;
 	uint num_normals = 0;
-	uint* normals = nullptr;
+	float* normals = nullptr;
 
 	uint id_uvs = 0;
 	uint num_uvs = 0;
-	uint* uvs = 0;
+	float* uvs = 0;
 };
 
 class ModuleFBXLoader : public Module
@@ -47,7 +49,7 @@ public:
 	update_status Update(float dt);
 	bool CleanUp();
 
-	void LoadFile(const char* file_path);
+	void LoadFile(std::string file_path);
 	void LoadMesh(const aiScene* scene, aiNode* children_node);
 	uint GenerateTextureId(const char* texture_path);
 

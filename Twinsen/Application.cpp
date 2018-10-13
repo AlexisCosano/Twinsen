@@ -22,8 +22,8 @@ Application::Application()
 	AddModule(audio);
 	
 	// Scenes
-	AddModule(fbx_loader);
 	AddModule(scene_intro);
+	AddModule(fbx_loader);
 	
 	// Renderer last!
 	AddModule(renderer3D);

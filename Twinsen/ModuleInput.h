@@ -1,6 +1,8 @@
 #pragma once
 #include "Module.h"
 #include "Globals.h"
+#include <string>
+
 
 #define MAX_MOUSE_BUTTONS 5
 
@@ -73,6 +75,7 @@ private:
 	int mouse_x_motion;
 	int mouse_y_motion;
 	bool quit_engine = false;
+	std::string file_path;
 	//int mouse_z_motion;
 
 	JSON_Object *input_object;
