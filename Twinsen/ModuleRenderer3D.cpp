@@ -8,9 +8,9 @@
 #pragma comment (lib, "glu32.lib")    /* link OpenGL Utility lib     */
 #pragma comment (lib, "opengl32.lib") /* link Microsoft OpenGL lib   */
 
+
 ModuleRenderer3D::ModuleRenderer3D(Application* app, bool start_enabled) : Module(app, start_enabled)
 {
-	name.assign("renderer");
 }
 
 // Destructor
@@ -28,7 +28,7 @@ bool ModuleRenderer3D::Init()
 		LOG("SDL_VIDEO could not initialize! SDL_Error: %s\n", SDL_GetError());
 		ret = false;
 	}
-	else 
+	else
 	{
 		//Create context
 		context = SDL_GL_CreateContext(App->window->window);
@@ -92,6 +92,7 @@ bool ModuleRenderer3D::Init()
 			lights[0].SetPos(0.0f, 0.5f, 0.0f);
 			lights[0].Init();
 
+			//Materials
 			GLfloat ambient_material[] = { 1.0f, 1.0f, 1.0f, 1.0f };
 			glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT, ambient_material);
 
@@ -100,9 +101,9 @@ bool ModuleRenderer3D::Init()
 
 			glEnable(GL_COLOR_MATERIAL);
 			glEnable(GL_DEPTH_TEST);
-			glEnable(GL_CULL_FACE);
-			glEnable(GL_LIGHTING);
-			lights[0].Active(true);			
+			glDisable(GL_CULL_FACE);
+			glDisable(GL_LIGHTING);
+			lights[0].Active(true);
 		}
 
 		// Projection matrix for
@@ -118,26 +119,23 @@ update_status ModuleRenderer3D::PreUpdate(float dt)
 	glLoadIdentity();
 
 	glMatrixMode(GL_MODELVIEW);
-	//glLoadMatrixf((GLfloat*)App->camera->GetViewMatrix());
+	glLoadMatrixf(App->camera->GetViewMatrix());
 
 	// light 0 on cam pos
 	lights[0].SetPos(App->camera->Position.x, App->camera->Position.y, App->camera->Position.z);
 
-	for(uint i = 0; i < MAX_LIGHTS; ++i)
+	for (uint i = 0; i < MAX_LIGHTS; ++i)
 		lights[i].Render();
 
 	return UPDATE_CONTINUE;
 }
 
-// Update
 update_status ModuleRenderer3D::Update(float dt)
 {
-	for (std::vector<MeshData>::iterator iterator = App->fbx_loader->meshes.begin(); iterator != App->fbx_loader->meshes.end(); ++iterator)
-	{
-		DrawFBX(*iterator);
-	}
-	
-	return (UPDATE_CONTINUE);
+	for (std::vector<MeshData>::iterator item = App->fbx_loader->meshes.begin(); item != App->fbx_loader->meshes.end(); ++item)
+		App->renderer3D->DrawFBX(*item);
+
+	return UPDATE_CONTINUE;
 }
 
 // PostUpdate present buffer to screen
@@ -157,6 +155,30 @@ bool ModuleRenderer3D::CleanUp()
 	return true;
 }
 
+bool ModuleRenderer3D::DrawFBX(MeshData mesh)
+{
+	bool ret = false;
+
+	glEnableClientState(GL_VERTEX_ARRAY);
+	glEnableClientState(GL_TEXTURE_COORD_ARRAY);
+	glEnable(GL_TEXTURE_2D);
+
+	glBindBuffer(GL_ARRAY_BUFFER, mesh.id_vertex);
+	glVertexPointer(3, GL_FLOAT, 0, NULL);
+	glBindBuffer(GL_ARRAY_BUFFER, mesh.id_uvs);
+	glTexCoordPointer(2, GL_FLOAT, 0, NULL);
+
+	glBindTexture(GL_TEXTURE_2D, mesh.texture_id);
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, mesh.id_index);
+	glDrawElements(GL_TRIANGLES, mesh.num_index, GL_UNSIGNED_INT, NULL);
+
+	glDisableClientState(GL_VERTEX_ARRAY);
+	glDisableClientState(GL_TEXTURE_COORD_ARRAY);
+	glBindTexture(GL_TEXTURE_2D, 0);
+	glDisable(GL_TEXTURE_2D);
+
+	return ret;
+}
 
 void ModuleRenderer3D::OnResize(int width, int height)
 {
@@ -164,47 +186,11 @@ void ModuleRenderer3D::OnResize(int width, int height)
 
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
-
-	//ProjectionMatrix = float4x4(60.0f, (float)width / (float)height, 0.125f, 512.0f);
-	//ProjectionMatrix = math::float4x4(0.0f, 0.0f, 0.0f, 0.0f);
-
-	//glLoadMatrixf((GLfloat*)&ProjectionMatrix);
+	ProjectionMatrix = perspective(60.0f, (float)width / (float)height, 0.125f, 512.0f);
+	glLoadMatrixf(&ProjectionMatrix);
 
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
-}
-
-/*
-void ModuleRenderer3D::DrawCube()
-{
-
-}
-*/
-
-void ModuleRenderer3D::DrawFBX(MeshData mesh_to_draw)
-{
-	glEnableClientState(GL_VERTEX_ARRAY);
-	glEnableClientState(GL_TEXTURE_COORD_ARRAY);
-	glEnable(GL_TEXTURE_2D);
-
-
-	glBindBuffer(GL_ARRAY_BUFFER, mesh_to_draw.id_vertex);
-	glVertexPointer(3, GL_FLOAT, 0, NULL);
-
-	glBindBuffer(GL_ARRAY_BUFFER, mesh_to_draw.id_uvs);
-	glTexCoordPointer(2, GL_FLOAT, 0, NULL);
-
-	glBindTexture(GL_TEXTURE_2D, mesh_to_draw.texture_id);
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, mesh_to_draw.id_index);
-
-
-	glDrawElements(GL_TRIANGLES, mesh_to_draw.num_index, GL_UNSIGNED_INT, NULL);
-
-
-	glDisableClientState(GL_VERTEX_ARRAY);
-	glDisableClientState(GL_TEXTURE_COORD_ARRAY);
-	glBindTexture(GL_TEXTURE_2D, 0);
-	glDisable(GL_TEXTURE_2D);
 }
 
 // Save & load ----------------------------------------------------------------------

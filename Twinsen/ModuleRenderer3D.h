@@ -1,8 +1,7 @@
 #pragma once
 #include "Module.h"
 #include "Globals.h"
-#include "MathGeoLib/Math/float3x3.h"
-#include "MathGeoLib/Math/float4x4.h"
+#include "glmath.h"
 #include "Light.h"
 
 #define MAX_LIGHTS 8
@@ -22,9 +21,7 @@ public:
 	bool CleanUp();
 
 	void OnResize(int width, int height);
-
-	void DrawCube();
-	void DrawFBX(MeshData mesh_to_draw);
+	bool DrawFBX(MeshData mesh_to_draw);
 
 	// Save & load
 	bool Save();
@@ -34,6 +31,6 @@ public:
 
 	Light lights[MAX_LIGHTS];
 	SDL_GLContext context;
-	math::float3x3 NormalMatrix;
-	math::float4x4 ModelMatrix, ViewMatrix, ProjectionMatrix;
+	mat3x3 NormalMatrix;
+	mat4x4 ModelMatrix, ViewMatrix, ProjectionMatrix;
 };
