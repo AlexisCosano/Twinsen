@@ -204,6 +204,12 @@ public:
 	static const float4d inf;
 };
 
+/// Rotation matrix given a vector and an angle
+/** This function appears in the OpenGL library and it's used to rotate vectors by a given angle.
+Adding this function in order to use it on the ModulerCamera3D. It is copied straight from the OpenGL glmath.cpp.
+*/
+float4x4& RotateFloat4x4(const float3 &u, float angle);
+
 inline float4d operator *(double scalar, const float4d &vec)
 {
 #if defined(MATH_SSE2) && defined(MATH_AUTOMATIC_SSE)

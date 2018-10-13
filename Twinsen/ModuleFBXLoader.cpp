@@ -55,14 +55,16 @@ void ModuleFBXLoader::LoadFile(const char* file_path)
 	
 	if (scene != nullptr && scene->HasMeshes())
 	{
-		for (int i = 0; i < scene->mNumMeshes; i++)
-		{
-			aiNode* root = scene->mRootNode;
+		aiNode* root = scene->mRootNode;
 
-			LoadMesh(scene, root);
+		for (int i = 0; i < root->mNumChildren; i++)
+		{
+			LoadMesh(scene, root->mChildren[i]);
 		}
 
 		aiReleaseImport(scene);
+
+		LOG("Loading scene with path: %s", file_path);
 	}
 	else
 	{
@@ -73,53 +75,122 @@ void ModuleFBXLoader::LoadFile(const char* file_path)
 // ------------------------------------------------------------------
 void ModuleFBXLoader::LoadMesh(const aiScene* scene, aiNode* children_node)
 {
-	for (int i = 0; i < children_node->mNumChildren; ++i)
+	for (int i = 0; i < children_node->mNumMeshes; ++i)
 	{
-		for (int j = 0; j < children_node->mChildren[i]->mNumMeshes; j++)
+		aiMesh* current_mesh = scene->mMeshes[children_node->mMeshes[i]];
+		mesh_to_load = MeshData();
+
+		mesh_to_load.num_vertex = current_mesh->mNumVertices;
+		mesh_to_load.vertex = new uint[mesh_to_load.num_vertex * 3];
+
+		memcpy(mesh_to_load.vertex, current_mesh->mVertices, sizeof(float) * mesh_to_load.num_vertex * 3);
+
+		glGenBuffers(1, (GLuint*)&(mesh_to_load.id_vertex));
+		glBindBuffer(GL_ARRAY_BUFFER, mesh_to_load.id_vertex);
+		glBufferData(GL_ARRAY_BUFFER, sizeof(float) * 3 * mesh_to_load.num_vertex, mesh_to_load.vertex, GL_STATIC_DRAW);
+		LOG("Mesh with %d vertices.", mesh_to_load.num_vertex);
+
+		if (current_mesh->HasFaces())
 		{
-			aiMesh* current_mesh = scene->mMeshes[children_node->mChildren[i]->mMeshes[j]];
-			mesh_to_load = MeshData();
+			mesh_to_load.num_index = current_mesh->mNumFaces * 3;
+			mesh_to_load.index = new uint[mesh_to_load.num_index];
 
-			mesh_to_load.num_vertex = current_mesh->mNumVertices;
-			mesh_to_load.vertex = new uint[mesh_to_load.num_vertex * 3];
-
-			memcpy(mesh_to_load.vertex, current_mesh->mVertices, sizeof(float) * mesh_to_load.num_vertex * 3);
-
-			glGenBuffers(1, (GLuint*)&(mesh_to_load.id_vertex));
-			glBindBuffer(GL_ARRAY_BUFFER, mesh_to_load.id_vertex);
-			glBufferData(GL_ARRAY_BUFFER, sizeof(float) * 3 * mesh_to_load.num_vertex, mesh_to_load.vertex, GL_STATIC_DRAW);
-			LOG("Mesh with %d vertices.", mesh_to_load.num_vertex);
-
-			if (current_mesh->HasFaces())
+			for (uint j = 0; j < current_mesh->mNumFaces; ++j)
 			{
-				mesh_to_load.num_index = current_mesh->mNumFaces * 3;
-				mesh_to_load.index = new uint[mesh_to_load.num_index];
-
-				for (uint k = 0; k < current_mesh->mNumFaces; ++k)
+				if (current_mesh->mFaces[j].mNumIndices != 3)
 				{
-					if (current_mesh->mFaces[k].mNumIndices != 3)
-					{
-						LOG("WARNING: geometry face with != 3 index!");
-					}
-					else
-					{
-						memcpy(&mesh_to_load.index[k * 3], current_mesh->mFaces[k].mIndices, 3 * sizeof(float));
-					}
+					LOG("WARNING: geometry face with != 3 index!");
 				}
-
-				glGenBuffers(1, (GLuint*)&(mesh_to_load.id_index));
-				glBindBuffer(GL_ARRAY_BUFFER, mesh_to_load.id_index);
-				glBufferData(GL_ARRAY_BUFFER, sizeof(float) * 3 * mesh_to_load.num_index, mesh_to_load.index, GL_STATIC_DRAW);
+				else
+				{
+					memcpy(&mesh_to_load.index[j * 3], current_mesh->mFaces[j].mIndices, 3 * sizeof(float));
+				}
 			}
 
-			meshes.push_back(mesh_to_load);
-			LOG("Loaded mesh with %i vertices.", mesh_to_load.num_vertex);
-			LOG("Loaded mesh with %i indices.", mesh_to_load.num_index);
-			LOG("Loaded mesh with %i triangles.", mesh_to_load.num_vertex / 3);
+			glGenBuffers(1, (GLuint*)&(mesh_to_load.id_index));
+			glBindBuffer(GL_ARRAY_BUFFER, mesh_to_load.id_index);
+			glBufferData(GL_ARRAY_BUFFER, sizeof(float) * 3 * mesh_to_load.num_index, mesh_to_load.index, GL_STATIC_DRAW);
 		}
 
-		LoadMesh(scene, children_node->mChildren[i]);
+		if (current_mesh->HasNormals())
+		{
+			mesh_to_load.num_normals = current_mesh->mNumVertices;
+			mesh_to_load.normals = new uint[mesh_to_load.num_normals * 3];
+			memcpy(mesh_to_load.normals, current_mesh->mNormals, sizeof(uint) * mesh_to_load.num_normals * 3);
+
+			glGenBuffers(1, (GLuint*)&(mesh_to_load.id_normals));
+			glBindBuffer(GL_ARRAY_BUFFER, mesh_to_load.id_normals);
+			glBufferData(GL_ARRAY_BUFFER, sizeof(uint) * 3 * mesh_to_load.num_normals, mesh_to_load.normals, GL_STATIC_DRAW);
+		}
+
+		if (current_mesh->HasTextureCoords(mesh_to_load.id_uvs))
+		{
+			mesh_to_load.num_uvs = current_mesh->mNumVertices;
+			mesh_to_load.uvs = new uint[mesh_to_load.num_uvs * 2];
+
+			for (int i = 0; i < current_mesh->mNumVertices; ++i)
+			{
+				memcpy(&mesh_to_load.uvs[i * 2], &current_mesh->mTextureCoords[0][i].x, sizeof(uint));
+				memcpy(&mesh_to_load.uvs[(i * 2) + 1], &current_mesh->mTextureCoords[0][i].y, sizeof(uint));
+			}
+
+			glGenBuffers(1, (GLuint*)&(mesh_to_load.id_uvs));
+			glBindBuffer(GL_ARRAY_BUFFER, mesh_to_load.id_uvs);
+			glBufferData(GL_ARRAY_BUFFER, sizeof(uint) * 2 * mesh_to_load.num_uvs, mesh_to_load.uvs, GL_STATIC_DRAW);
+		}
+
+		aiMaterial* texture = scene->mMaterials[current_mesh->mMaterialIndex];
+
+		if (texture == nullptr)
+		{
+			LOG("This model has no texture or its texture cannot be found.");
+		}
+		else
+		{
+			aiString texture_path;
+			texture->GetTexture(aiTextureType_DIFFUSE, 0, &texture_path);
+
+			if (texture_path.length > 0)
+			{
+				std::string basePath = "Model/";
+				std::string finalpath = texture_path.data;
+				finalpath.erase(0, finalpath.find_last_of("\\") + 1);
+				basePath += finalpath;
+
+				mesh_to_load.texture_id = GenerateTextureId(basePath.c_str());
+
+				finalpath.clear();
+				basePath.clear();
+			}
+
+			LOG("Loading this mesh's texture.");
+		}
+
+		meshes.push_back(mesh_to_load);
+		LOG("Loaded mesh with %i vertices.", mesh_to_load.num_vertex);
+		LOG("Loaded mesh with %i indices.", mesh_to_load.num_index);
+		LOG("Loaded mesh with %i triangles.", mesh_to_load.num_vertex / 3);
 	}
+
+	for (int k = 0; k < children_node->mNumChildren; k++)
+	{
+		LoadMesh(scene, children_node->mChildren[k]);
+	}
+}
+
+// Generate texture id ----------------------------------------------
+uint ModuleFBXLoader::GenerateTextureId(const char* texture_path)
+{
+	uint result;
+	ILuint tmp_id;
+	
+	ilGenImages(1, &tmp_id);
+	ilBindImage(tmp_id);
+	ilLoadImage(texture_path);
+
+	result = ilutGLBindTexImage();
+
+	return result;
 }
 
 // ------------------------------------------------------------------

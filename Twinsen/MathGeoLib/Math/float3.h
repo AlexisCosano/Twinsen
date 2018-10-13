@@ -719,6 +719,12 @@ public:
 #endif
 };
 
+/// Rotates the given vector.
+/** This function appears in the OpenGL library and it's used to rotate vectors by a given angle.
+Adding this function in order to use it on the ModulerCamera3D. It is copied straight from the OpenGL glmath.cpp.
+*/
+float3 RotateFloat3(const float3 &u, float angle, const float3 &v);
+
 /// Prints this float3 to the given stream.
 #ifdef MATH_ENABLE_STL_SUPPORT
 std::ostream &operator <<(std::ostream &out, const float3 &rhs);

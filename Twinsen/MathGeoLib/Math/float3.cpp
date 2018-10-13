@@ -26,6 +26,7 @@
 #include "float2.h"
 #include "float4.h"
 #include "float3x3.h"
+#include "float4x4.h"
 #include "../Geometry/Line.h"
 #include "../Geometry/Ray.h"
 #include "../Geometry/LineSegment.h"
@@ -1102,6 +1103,11 @@ float3 &float3::operator /=(float scalar)
 #endif
 
 	return *this;
+}
+
+float3 RotateFloat3(const float3 &u, float angle, const float3 &v)
+{
+	return *(float3*)&(RotateFloat4x4(v, angle) * float4(u, 1.0f));
 }
 
 #ifdef MATH_ENABLE_STL_SUPPORT

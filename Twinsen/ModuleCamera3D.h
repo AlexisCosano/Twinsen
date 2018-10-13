@@ -19,7 +19,7 @@ public:
 	void Look(const math::float3 &Position, const math::float3 &Reference, bool RotateAroundReference = false);
 	void LookAt(const math::float3 &Spot);
 	void Move(const math::float3 &Movement);
-	float* GetViewMatrix();
+	math::float4x4* GetViewMatrix();
 
 	// Save & load
 	bool Save();

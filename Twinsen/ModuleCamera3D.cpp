@@ -71,23 +71,22 @@ update_status ModuleCamera3D::Update(float dt)
 
 		Position -= Reference;
 
-		/*/
+		
 		if (dx != 0)
 		{
 			float DeltaX = (float)dx * Sensitivity;
 
-			X = rotate(X, DeltaX, math::float3(0.0f, 1.0f, 0.0f));
-			Y = rotate(Y, DeltaX, math::float3(0.0f, 1.0f, 0.0f));
-			Z = rotate(Z, DeltaX, math::float3(0.0f, 1.0f, 0.0f));
+			X = RotateFloat3(X, DeltaX, math::float3(0.0f, 1.0f, 0.0f));
+			Y = RotateFloat3(Y, DeltaX, math::float3(0.0f, 1.0f, 0.0f));
+			Z = RotateFloat3(Z, DeltaX, math::float3(0.0f, 1.0f, 0.0f));			
 		}
-		*/
-		/*
+		
 		if (dy != 0)
 		{
 			float DeltaY = (float)dy * Sensitivity;
 
-			Y = rotate(Y, DeltaY, X);
-			Z = rotate(Z, DeltaY, X);
+			Y = RotateFloat3(Y, DeltaY, X);
+			Z = RotateFloat3(Z, DeltaY, X);
 
 			if (Y.y < 0.0f)
 			{
@@ -95,7 +94,6 @@ update_status ModuleCamera3D::Update(float dt)
 				Y = math::Cross(Z, X);
 			}
 		}
-		*/
 
 		Position = Reference + Z * math::float3(Position).Length();
 	}
@@ -148,12 +146,10 @@ void ModuleCamera3D::Move(const math::float3 &Movement)
 }
 
 // -----------------------------------------------------------------
-/*
-float* ModuleCamera3D::GetViewMatrix()
+math::float4x4* ModuleCamera3D::GetViewMatrix()
 {
 	return &ViewMatrix;
 }
-*/
 
 // -----------------------------------------------------------------
 void ModuleCamera3D::CalculateViewMatrix()

@@ -37,6 +37,11 @@
 #include <Urho3D/Math/Matrix4.h>
 #endif
 
+/// Defining PI
+#ifndef M_PI
+#define M_PI                   3.14159265358979323846f
+#endif
+
 MATH_BEGIN_NAMESPACE
 
 /// A 4-by-4 matrix for affine transformations and perspective projections of 3D geometry.
@@ -958,6 +963,10 @@ public:
 	inline float4 MulDir(const float4 &directionVector) const { assume(EqualAbs(directionVector.w, 0.f)); return Mul(directionVector); }
 	float4 Mul(const float4 &vector) const;
 };
+
+/// Custom function
+// It does the same as RotateAxisAngle but it's out of the Float4x4 class.
+float4x4& RotateFloat4x4(const float3 &u, float angle);
 
 #ifdef MATH_ENABLE_STL_SUPPORT
 /// Prints this float4x4 to the given stream.

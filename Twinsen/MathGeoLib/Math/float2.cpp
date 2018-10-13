@@ -770,6 +770,15 @@ float2 &float2::operator /=(float scalar)
 	return *this;
 }
 
+float2 RotateFloat2(const float2 &u, float angle)
+{
+	angle = angle / 180.0f * (float)M_PI;
+
+	float c = Cos(angle), s = Sin(angle);
+
+	return float2(u.x * c - u.y * s, u.x * s + u.y * c);
+}
+
 #ifdef MATH_ENABLE_STL_SUPPORT
 std::ostream &operator <<(std::ostream &out, const float2 &rhs)
 {

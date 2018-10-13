@@ -92,7 +92,6 @@ bool ModuleRenderer3D::Init()
 			lights[0].SetPos(0.0f, 0.5f, 0.0f);
 			lights[0].Init();
 
-			//Materials
 			GLfloat ambient_material[] = { 1.0f, 1.0f, 1.0f, 1.0f };
 			glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT, ambient_material);
 
@@ -101,8 +100,8 @@ bool ModuleRenderer3D::Init()
 
 			glEnable(GL_COLOR_MATERIAL);
 			glEnable(GL_DEPTH_TEST);
-			glDisable(GL_CULL_FACE);
-			glDisable(GL_LIGHTING);
+			glEnable(GL_CULL_FACE);
+			glEnable(GL_LIGHTING);
 			lights[0].Active(true);			
 		}
 
@@ -182,14 +181,27 @@ void ModuleRenderer3D::DrawCube()
 void ModuleRenderer3D::DrawFBX(const MeshData& mesh_to_draw)
 {
 	glEnableClientState(GL_VERTEX_ARRAY);
-	
+	glEnableClientState(GL_TEXTURE_COORD_ARRAY);
+	glEnable(GL_TEXTURE_2D);
+
+
 	glBindBuffer(GL_ARRAY_BUFFER, mesh_to_draw.id_vertex);
 	glVertexPointer(3, GL_FLOAT, 0, NULL);
 
+	glBindBuffer(GL_ARRAY_BUFFER, mesh_to_draw.id_uvs);
+	glTexCoordPointer(2, GL_FLOAT, 0, NULL);
+
+	glBindTexture(GL_TEXTURE_2D, mesh_to_draw.texture_id);
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, mesh_to_draw.id_index);
+
+
 	glDrawElements(GL_TRIANGLES, mesh_to_draw.num_index, GL_UNSIGNED_INT, NULL);
 
+
 	glDisableClientState(GL_VERTEX_ARRAY);
+	glDisableClientState(GL_TEXTURE_COORD_ARRAY);
+	glBindTexture(GL_TEXTURE_2D, 0);
+	glDisable(GL_TEXTURE_2D);
 }
 
 // Save & load ----------------------------------------------------------------------

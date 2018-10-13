@@ -11,6 +11,8 @@ struct aiNode;
 
 struct MeshData
 {
+	uint texture_id = 0;
+
 	uint id_index = 0;
 	uint num_index = 0;
 	uint* index = nullptr;
@@ -18,13 +20,19 @@ struct MeshData
 	uint id_vertex = 0;
 	uint num_vertex = 0;
 	uint* vertex = nullptr;
+
+	uint id_normals = 0;
+	uint num_normals = 0;
+	uint* normals = nullptr;
+
+	uint id_uvs = 0;
+	uint num_uvs = 0;
+	uint* uvs = 0;
 };
 
 class ModuleFBXLoader : public Module
 {
 private:
-	int random_number = 0;
-
 	MeshData mesh_to_load;
 
 public:
@@ -41,6 +49,7 @@ public:
 
 	void LoadFile(const char* file_path);
 	void LoadMesh(const aiScene* scene, aiNode* children_node);
+	uint GenerateTextureId(const char* texture_path);
 
 	// Save & load
 	bool Save();

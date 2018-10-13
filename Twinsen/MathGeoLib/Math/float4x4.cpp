@@ -2158,6 +2158,19 @@ float4x4 float4x4::Abs() const
 	return ret;
 }
 
+/// Custom function
+float4x4& RotateFloat4x4(const float3 &u, float angle)
+{
+	float4x4 rotate;
+
+	rotate.SetRotatePart(u, angle);
+	rotate.SetRow(3, 0, 0, 0, 1);
+	rotate.SetCol3(3, 0, 0, 0);
+
+	return rotate;
+}
+
+
 #ifdef MATH_ENABLE_STL_SUPPORT
 std::ostream &operator <<(std::ostream &out, const float4x4 &rhs)
 {

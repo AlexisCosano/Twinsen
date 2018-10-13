@@ -38,6 +38,11 @@
 
 MATH_BEGIN_NAMESPACE
 
+/// Defining PI
+#ifndef M_PI
+#define M_PI                   3.14159265358979323846f
+#endif
+
 /// A vector of form (x,y).
 class float2
 {
@@ -635,6 +640,12 @@ public:
 	operator Urho3D::Vector2() const { return Urho3D::Vector2(x, y); }
 #endif
 };
+
+/// Rotates the given vector.
+/** This function appears in the OpenGL library and it's used to rotate vectors by a given angle.
+Adding this function in order to use it on the ModulerCamera3D. It is copied straight from the OpenGL glmath.cpp.
+*/
+float2 RotateFloat2(const float2 &u, float angle);
 
 #ifdef MATH_ENABLE_STL_SUPPORT
 /// Prints this float2 to the given stream.
