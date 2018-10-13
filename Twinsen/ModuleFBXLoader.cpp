@@ -29,10 +29,6 @@ bool ModuleFBXLoader::Init()
 	ilutInit();
 	ilutRenderer(ILUT_OPENGL);
 
-	struct aiLogStream stream;
-	stream = aiGetPredefinedLogStream(aiDefaultLogStream_DEBUGGER, nullptr);
-	aiAttachLogStream(&stream);
-
 	return ret;
 }
 

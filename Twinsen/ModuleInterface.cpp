@@ -270,6 +270,14 @@ update_status ModuleInterface::Update(float dt)
 			ImGui::EndMenu();
 		}
 
+		if (ImGui::BeginMenu("Loaded Textures"))
+		{
+			for (std::vector<MeshData>::iterator item = App->fbx_loader->meshes.begin(); item != App->fbx_loader->meshes.end(); ++item)
+				ImGui::Image((ImTextureID)(*item).texture_id, ImVec2(200, 200), ImVec2(0, 0), ImVec2(1, -1));
+
+			ImGui::EndMenu();
+		}
+
 		ImGui::EndMainMenuBar();
 	}
 
