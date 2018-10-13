@@ -14,6 +14,12 @@ enum KEY_STATE
 	KEY_UP
 };
 
+enum FILE_TYPE
+{
+	MODEL = 0,
+	TEXTURE
+};
+
 class ModuleInput : public Module
 {
 public:
@@ -23,6 +29,7 @@ public:
 
 	bool Init();
 	update_status PreUpdate(float dt);
+	FILE_TYPE GetFileType(std::string file_name);
 	bool CleanUp();
 
 	KEY_STATE GetKey(int id) const

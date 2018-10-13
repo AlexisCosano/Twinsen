@@ -17,9 +17,6 @@ bool ModuleInterface::Init()
 {
 	bool ret = true;
 
-	glMatrixMode(GL_PROJECTION);
-	glLoadIdentity();
-
 	glewInit();
 
 	ImGui_ImplSdlGL3_Init(App->window->window);

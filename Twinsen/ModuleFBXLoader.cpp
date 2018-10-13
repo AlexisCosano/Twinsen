@@ -21,7 +21,7 @@ ModuleFBXLoader::ModuleFBXLoader(Application* app, bool start_enabled) : Module(
 ModuleFBXLoader::~ModuleFBXLoader() {}
 
 // -----------------------------------------------------------------
-bool ModuleFBXLoader::Start()
+bool ModuleFBXLoader::Init()
 {
 	bool ret = true;
 
@@ -34,6 +34,15 @@ bool ModuleFBXLoader::Start()
 	aiAttachLogStream(&stream);
 
 	return ret;
+}
+
+void ModuleFBXLoader::SetTexture(const char* path)
+{
+	ILuint id;
+	ilGenImages(1, &id);
+	ilBindImage(id);
+	ilLoadImage(path);
+	last_texture_id = ilutGLBindTexImage();
 }
 
 // Pre update -------------------------------------------------------
@@ -111,7 +120,7 @@ void ModuleFBXLoader::LoadMesh(const aiScene* scene, aiNode* children_node)
 
 				glGenBuffers(1, (GLuint*)&(mesh_to_load.id_index));
 				glBindBuffer(GL_ARRAY_BUFFER, mesh_to_load.id_index);
-				glBufferData(GL_ARRAY_BUFFER, sizeof(float) * 3 * mesh_to_load.num_index, mesh_to_load.index, GL_STATIC_DRAW);
+				glBufferData(GL_ARRAY_BUFFER, sizeof(float) * mesh_to_load.num_index, mesh_to_load.index, GL_STATIC_DRAW);
 			}
 
 			if (current_mesh->HasNormals())
@@ -154,15 +163,15 @@ void ModuleFBXLoader::LoadMesh(const aiScene* scene, aiNode* children_node)
 
 				if (texture_path.length > 0)
 				{
-					std::string basePath = "Model/";
-					std::string finalpath = texture_path.data;
-					finalpath.erase(0, finalpath.find_last_of("\\") + 1);
-					basePath += finalpath;
+					std::string base_path = "Models/";
+					std::string final_path = texture_path.data;
+					final_path.erase(0, final_path.find_last_of("\\") + 1);
+					base_path += final_path;
 
-					mesh_to_load.texture_id = GenerateTextureId(basePath.c_str());
+					mesh_to_load.texture_id = GenerateTextureId(base_path.c_str());
 
-					finalpath.clear();
-					basePath.clear();
+					final_path.clear();
+					base_path.clear();
 				}
 
 				LOG("Loading this mesh's texture.");
@@ -190,13 +199,13 @@ uint ModuleFBXLoader::GenerateTextureId(const char* texture_path)
 {
 	uint result;
 	ILuint tmp_id;
-	
+
 	ilGenImages(1, &tmp_id);
 	ilBindImage(tmp_id);
 	ilLoadImage(texture_path);
 
 	result = ilutGLBindTexImage();
-
+	
 	return result;
 }
 

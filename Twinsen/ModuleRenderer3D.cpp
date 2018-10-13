@@ -168,7 +168,11 @@ bool ModuleRenderer3D::DrawFBX(MeshData mesh)
 	glBindBuffer(GL_ARRAY_BUFFER, mesh.id_uvs);
 	glTexCoordPointer(2, GL_FLOAT, 0, NULL);
 
-	glBindTexture(GL_TEXTURE_2D, mesh.texture_id);
+	if(App->fbx_loader->last_texture_id == 0)
+		glBindTexture(GL_TEXTURE_2D, mesh.texture_id);
+	else
+		glBindTexture(GL_TEXTURE_2D, App->fbx_loader->last_texture_id);
+
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, mesh.id_index);
 	glDrawElements(GL_TRIANGLES, mesh.num_index, GL_UNSIGNED_INT, NULL);
 
