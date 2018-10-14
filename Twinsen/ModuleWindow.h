@@ -20,6 +20,13 @@ public:
 	bool CleanUp();
 
 	void SetTitle(const char* title);
+	void SetFullScreen(bool fullscreen);
+	void SetWindowed(bool borderless);
+	void SetWindowBrigthness(float brightness);
+	void SetWindowWidth(int w);
+	void SetWindowHeight(int h);
+	void SetWindowSize(int w, int h);
+	void SetWindowFullDesktop();
 
 	// Save & load
 	bool Save();

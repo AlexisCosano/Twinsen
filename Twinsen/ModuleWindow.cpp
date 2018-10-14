@@ -140,6 +140,51 @@ void ModuleWindow::SetTitle(const char* title)
 	SDL_SetWindowTitle(window, title);
 }
 
+void ModuleWindow::SetFullScreen(bool fullscreen)
+{
+	if (fullscreen == true)
+	{
+		SDL_SetWindowFullscreen(window, SDL_WINDOW_FULLSCREEN);
+	}
+	else
+	{
+		SDL_SetWindowFullscreen(window, 0);
+	}
+
+}
+
+void ModuleWindow::SetWindowed(bool borderless)
+{
+	if (borderless == true)
+	{
+		SDL_SetWindowFullscreen(window, 0);
+	}
+}
+
+void ModuleWindow::SetWindowBrigthness(float brightness)
+{
+	SDL_SetWindowBrightness(window, brightness);
+}
+
+void ModuleWindow::SetWindowWidth(int w)
+{
+	SDL_SetWindowSize(window, w, screen_surface->h);
+}
+
+void ModuleWindow::SetWindowHeight(int h)
+{
+	SDL_SetWindowSize(window, screen_surface->w, h);
+}
+
+void ModuleWindow::SetWindowSize(int w, int h)
+{
+	SDL_SetWindowSize(window, w, h);
+}
+void ModuleWindow::SetWindowFullDesktop()
+{
+	SDL_SetWindowSize(window, 1920, 1080);
+}
+
 const char* ModuleWindow::GetTitle()
 {
 	return(window_title);

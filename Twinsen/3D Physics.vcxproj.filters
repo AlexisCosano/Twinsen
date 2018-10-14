@@ -43,6 +43,9 @@
     <Filter Include="Sources\Tools\JSON">
       <UniqueIdentifier>{d86d633d-b268-45dc-9d3b-3b2b66b58fb2}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Sources\Tools\mmgr">
+      <UniqueIdentifier>{4f3894dd-8327-4a66-b193-4f4ffa7903a0}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Module.h">
@@ -297,6 +300,12 @@
     <ClInclude Include="Console.h">
       <Filter>Sources\Helpers</Filter>
     </ClInclude>
+    <ClInclude Include="mmgr\mmgr.h">
+      <Filter>Sources\Tools\mmgr</Filter>
+    </ClInclude>
+    <ClInclude Include="mmgr\nommgr.h">
+      <Filter>Sources\Tools\mmgr</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="ModuleAudio.cpp">
@@ -472,6 +481,9 @@
     </ClCompile>
     <ClCompile Include="Console.cpp">
       <Filter>Sources\Helpers</Filter>
+    </ClCompile>
+    <ClCompile Include="mmgr\mmgr.cpp">
+      <Filter>Sources\Tools\mmgr</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

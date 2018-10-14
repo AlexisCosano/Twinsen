@@ -14,6 +14,7 @@
 #include "ModuleFBXLoader.h"
 #include "JSON/parson.h"
 
+class EngineConfiguration;
 
 class Application
 {
