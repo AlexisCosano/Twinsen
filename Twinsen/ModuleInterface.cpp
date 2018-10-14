@@ -22,6 +22,8 @@ bool ModuleInterface::Init()
 
 	ImGui_ImplSdlGL3_Init(App->window->window);
 
+	console = new Console();
+
 	return ret;
 }
 
@@ -40,8 +42,6 @@ update_status ModuleInterface::Update(float dt)
 	static bool show_opengl_window = false;
 	static bool show_console =false;
 	static bool quit = false;
-
-	console = new Console();
 	
 	if(show_console)
 	{ 
