@@ -45,6 +45,7 @@ update_status ModuleInterface::Update(float dt)
 	static bool show_about_window = false;
 	static bool show_console =false;
 	static bool show_engine_configuration = false;
+	static bool show_mesh_properties = false;
 	static bool quit = false;
 	
 	if(show_console)
@@ -53,19 +54,53 @@ update_status ModuleInterface::Update(float dt)
 		console->Draw("Twinsen console");
 	}
 
+	if (show_mesh_properties)
+	{
+		ImGui::Begin("Mesh properties");
+		ImGui::SetNextWindowSize(ImVec2(520, 600), ImGuiCond_FirstUseEver);
+
+		ImGui::Text("");
+
+		ImGui::Text("Trtansformation");
+		ImGui::Separator();
+		ImGui::Text("Position: (%f, %f, %f)", 0.0f, 0.0f, 0.0f);
+		ImGui::Text("Rotation: (%f, %f, %f)", 0.0f, 0.0f, 0.0f);
+		ImGui::Text("Scale: (%f, %f, %f)", 1.0f, 1.0f, 1.0f);
+
+		ImGui::Text("");
+
+		ImGui::Text("Geometry");
+		ImGui::Separator();
+		for (std::vector<MeshData>::iterator item = App->fbx_loader->meshes.begin(); item != App->fbx_loader->meshes.end(); ++item)
+		{
+			ImGui::Text("Mesh's number of uvs: %i", item->num_uvs);
+			ImGui::Text("Mesh's number of normals: %i", item->num_normals);
+			ImGui::Text("Mesh's number of index: %i", item->num_index);
+			ImGui::Text("Mesh's number of vertex: %i", item->num_vertex);
+			ImGui::Text("Mesh's triangles: %i", item->num_vertex/3);
+		}
+
+		ImGui::Text("");
+
+		ImGui::Text("Textures");
+		ImGui::Separator();
+		for (std::vector<MeshData>::iterator item = App->fbx_loader->meshes.begin(); item != App->fbx_loader->meshes.end(); ++item)
+			ImGui::Image((ImTextureID)(*item).texture_id, ImVec2(200, 200), ImVec2(0, 0), ImVec2(1, -1));
+
+		ImGui::End();
+	}
+
 	if (show_engine_configuration)
 	{
 		ImGui::Begin("Engine configuration");
 		ImGui::SetNextWindowSize(ImVec2(520, 600), ImGuiCond_FirstUseEver);
-		static bool show_application = false;
 
-		ImGui::Separator();
 		if (ImGui::CollapsingHeader("Application"))
 		{
 			ImGui::TextWrapped("Engine name: Twinsen");
 
 			ImGui::Separator();
-			//FPS Graph
+		
 			for (uint i = 0; i < GRAPH_ARRAY_SIZE; i++)
 			{
 				fps_array[i] = fps_array[i + 1];
@@ -75,7 +110,6 @@ update_status ModuleInterface::Update(float dt)
 			sprintf_s(fps_title, 25, "Framerate %.1f", fps_array[GRAPH_ARRAY_SIZE - 1]);
 			ImGui::PlotHistogram("", fps_array, IM_ARRAYSIZE(fps_array), 30, fps_title, 0.0f, 130.0f, ImVec2(0, 80));
 
-			//MS Graph
 			for (uint i = 0; i < GRAPH_ARRAY_SIZE; i++)
 			{
 				ms_array[i] = ms_array[i + 1];
@@ -85,21 +119,16 @@ update_status ModuleInterface::Update(float dt)
 			sprintf_s(ms_title, 25, "Milliseconds %.1f", ms_array[GRAPH_ARRAY_SIZE - 1]);
 			ImGui::PlotHistogram("", ms_array, IM_ARRAYSIZE(ms_array), 30, ms_title, 0.0f, 130.0f, ImVec2(0, 80));
 
-			//sM Stats
 			sMStats smstats = m_getMemoryStatistics();
-
-			//Acummulated memory
 			ImGui::Text("Accumulated actual memory: "); ImGui::SameLine(); ImGui::TextColored(ImVec4(255, 255, 0, 255), "%i", smstats.accumulatedActualMemory);
-			//Memory peak
-			ImGui::Text("Actual memory peak: "); ImGui::SameLine(); ImGui::TextColored(ImVec4(255, 255, 0, 255), "%i", smstats.peakActualMemory);
-			//Actual memory
+			ImGui::Text("Current memory peak: "); ImGui::SameLine(); ImGui::TextColored(ImVec4(255, 255, 0, 255), "%i", smstats.peakActualMemory);
 			ImGui::Text("Total actual memory: "); ImGui::SameLine(); ImGui::TextColored(ImVec4(255, 255, 0, 255), "%i", smstats.totalActualMemory);
 		}
 
 		if (ImGui::CollapsingHeader("Window"))
 		{
 			ImGuiStyle& style = ImGui::GetStyle();
-			ImGui::DragFloat("Global Alpha", &style.Alpha, 0.005f, 0.20f, 1.0f, "%.2f");
+			ImGui::DragFloat("Alpha", &style.Alpha, 0.005f, 0.20f, 1.0f, "%.2f");
 
 			ImGui::SliderFloat("Brightness", &brightness, 0, 2, NULL);
 
@@ -117,7 +146,7 @@ update_status ModuleInterface::Update(float dt)
 				App->window->SetWindowed(&App->window->wwindowed_fullscreen);
 			}
 
-			if (ImGui::Checkbox("Full Desktop", &App->window->wborderless))
+			if (ImGui::Checkbox("Borderless", &App->window->wborderless))
 			{
 				App->window->SetWindowFullDesktop();
 				width = 1920;
@@ -126,17 +155,13 @@ update_status ModuleInterface::Update(float dt)
 
 			if (ImGui::Button("Apply"))
 			{
-				// Window size
 				App->window->SetWindowSize(width, height);
-
-				// Brigthness
 				App->window->SetWindowBrigthness(brightness);
 			}
 		}
 
 		if (ImGui::CollapsingHeader("Input"))
 		{
-			//Mouse position
 			ImGui::TextWrapped("Mouse position:");
 			ImGui::SameLine();
 			ImGui::TextColored({ 255, 255, 0, 255 }, "X: %i ", App->input->GetMouseX());
@@ -380,10 +405,9 @@ update_status ModuleInterface::Update(float dt)
 			ImGui::EndMenu();
 		}
 
-		if (ImGui::BeginMenu("Loaded Textures"))
+		if (ImGui::BeginMenu("Mesh"))
 		{
-			for (std::vector<MeshData>::iterator item = App->fbx_loader->meshes.begin(); item != App->fbx_loader->meshes.end(); ++item)
-				ImGui::Image((ImTextureID)(*item).texture_id, ImVec2(200, 200), ImVec2(0, 0), ImVec2(1, -1));
+			ImGui::Checkbox("Mesh properties", &show_mesh_properties);
 
 			ImGui::EndMenu();
 		}
