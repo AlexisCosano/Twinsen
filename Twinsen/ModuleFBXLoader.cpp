@@ -218,23 +218,49 @@ bool ModuleFBXLoader::CleanUp()
 // Save & load ----------------------------------------------------------------------
 bool ModuleFBXLoader::Save()
 {
-	/*
-	if (App->savefile_node.child(name.GetString()) == NULL)
+	if (App->config != NULL)
 	{
-	App->savefile_node.append_child(name.GetString());
-	App->savefile_document.save_file("savefile.xml");
+		if (json_object_has_value(App->modules_object, name._Get_data()._Myptr()) == false)
+		{
+			json_object_set_null(App->modules_object, name._Get_data()._Myptr());
+			json_serialize_to_file_pretty(App->config, "config.json");
+		}
+
+		LOG("Saving module %s", name._Get_data()._Myptr());
 	}
 	else
 	{
-	LOG("Nothing to save yet.");
+		json_object_set_null(App->modules_object, name._Get_data()._Myptr());
+
+		LOG("Saving module %s", name._Get_data()._Myptr());
 	}
-	*/
-	LOG("Saving module %s", name._Get_data()._Myptr());
+
+
 	return(true);
 }
 
 bool ModuleFBXLoader::Load()
 {
-	LOG("Loading module %s", name._Get_data()._Myptr());
-	return(true);
+	bool ret = false;
+
+	if (App->config != NULL)
+	{
+		if (json_object_has_value(App->modules_object, name._Get_data()._Myptr()) != false)
+		{
+			LOG("Loading module %s", name._Get_data()._Myptr());
+			ret = true;
+		}
+		else
+		{
+			LOG("Could not find the node named %s inside the file config.json", name._Get_data()._Myptr());
+			ret = false;
+		}
+	}
+	else
+	{
+		LOG("Document config.json not found.");
+		ret = false;
+	}
+
+	return ret;
 }

@@ -200,6 +200,8 @@ bool ModuleWindow::Save()
 
 bool ModuleWindow::Load()
 {
+	bool ret = false;
+
 	if (App->config != NULL)
 	{
 		if (json_object_has_value(App->modules_object, name._Get_data()._Myptr()) != false)
@@ -216,14 +218,20 @@ bool ModuleWindow::Load()
 			wvsync = json_object_dotget_boolean(window_object, "vsync");
 
 			LOG("Loading module %s", name._Get_data()._Myptr());
+			ret = true;
 		}
 		else
+		{
 			LOG("Could not find the node named %s inside the file config.json", name._Get_data()._Myptr());
+			ret = false;
+		}
+			
 	}
 	else
 	{
 		LOG("Document config.json not found.");
+		ret = false;
 	}
 	
-	return true;
+	return ret;
 }
