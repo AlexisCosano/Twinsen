@@ -1,7 +1,39 @@
 # Twinsen
-3D Game Engine - 2018
+-------------------------------------------------------------
 
-----------------------------------------------------------------------------------
+The Twinsen engine has been created by Alexis Cosano Rodríguez as a college's project.
+This release aims to be a 3D model viewer, which can load models with more than one mesh, but only one texture at a time.
+Here are the controls:
+
+- Pressing F focus the camera on the current model loaded.
+- Left Alt + Left Mouse Button orbitates around the object.
+- WASD + Right Mouse Button lets you use a FPS like camera.
+- SHIFT makes the camera move faster.
+- You can zoom in and out with the mouse wheel.
+
+- You can drag and drop models and textures.
+(But bear in mind that only one model and one texture can be displayed at a time)
+
+
+On the main menu bar there are some options that will help you test and learn more about the engine.
+
+
+
+# Useful links
+-------------------------------------------------------------
+
+My profile: https://github.com/AlexisCosano
+
+Twinsen's repository: https://github.com/AlexisCosano/Twinsen
+
+Twinsen's releases: https://github.com/AlexisCosano/Twinsen/releases
+
+
+
+
+-------------------------------------------------------------
+-------------------------------------------------------------
+-------------------------------------------------------------
 MIT License
 
 Copyright (c) 2018 
