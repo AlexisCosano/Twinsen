@@ -34,7 +34,7 @@ public:
 	//The surface contained by the window
 	SDL_Surface* screen_surface;
 
-	const char* window_title;
+	const char* window_title = "Config not found.";
 	int wwidth;
 	int wheight;
 	int wscale;

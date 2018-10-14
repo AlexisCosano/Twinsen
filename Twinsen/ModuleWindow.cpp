@@ -7,17 +7,6 @@ ModuleWindow::ModuleWindow(Application* app, bool start_enabled) : Module(app, s
 	window = NULL;
 	screen_surface = NULL;
 
-	//default variables in case config.xml is not loaded
-	window_title = "ERROR: window's title could not be loaded.";
-	wwidth = 1280;
-	wheight = 1024;
-	wscale = 1;
-	wfullscreen = false;
-	wresizable = true;
-	wborderless = false;
-	wwindowed_fullscreen = false;
-	wvsync = true;
-
 	name.assign("window");
 }
 
@@ -43,18 +32,45 @@ bool ModuleWindow::Init()
 		{
 			window_object = json_object_dotget_object(App->modules_object, "window");
 
-			window_title = json_object_dotget_string(window_object, "title");
-			SetTitle(window_title);
-			LOG("Title: %s\n", window_title);
+			if (window_object != NULL)
+			{
+				window_title = json_object_dotget_string(window_object, "title");
+				SetTitle(window_title);
+				LOG("Title: %s\n", window_title);
 
-			wwidth = json_object_dotget_number(window_object, "width");
-			wheight = json_object_dotget_number(window_object, "height");
-			wscale = json_object_dotget_number(window_object, "scale");
-			wfullscreen = json_object_dotget_boolean(window_object, "fullscreen");
-			wresizable = json_object_dotget_boolean(window_object, "resizable");
-			wborderless = json_object_dotget_boolean(window_object, "borderless");
-			wwindowed_fullscreen = json_object_dotget_boolean(window_object, "windowed_fullscreen");
-			wvsync = json_object_dotget_boolean(window_object, "vsync");
+				wwidth = json_object_dotget_number(window_object, "width");
+				wheight = json_object_dotget_number(window_object, "height");
+				wscale = json_object_dotget_number(window_object, "scale");
+				wfullscreen = json_object_dotget_boolean(window_object, "fullscreen");
+				wresizable = json_object_dotget_boolean(window_object, "resizable");
+				wborderless = json_object_dotget_boolean(window_object, "borderless");
+				wwindowed_fullscreen = json_object_dotget_boolean(window_object, "windowed_fullscreen");
+				wvsync = json_object_dotget_boolean(window_object, "vsync");
+			}
+			else
+			{
+				window_title = "Twinsen";
+				wwidth = 1280;
+				wheight = 1024;
+				wscale = 1;
+				wfullscreen = false;
+				wresizable = true;
+				wborderless = false;
+				wwindowed_fullscreen = false;
+				wvsync = true;
+			}
+		}
+		else
+		{
+			window_title = "Twinsen";
+			wwidth = 1280;
+			wheight = 1024;
+			wscale = 1;
+			wfullscreen = false;
+			wresizable = true;
+			wborderless = false;
+			wwindowed_fullscreen = false;
+			wvsync = true;
 		}
 
 		//Create window
@@ -132,23 +148,52 @@ const char* ModuleWindow::GetTitle()
 // Save & load ----------------------------------------------------------------------
 bool ModuleWindow::Save()
 {
-	/*
-	if (App->savefile_node.child(name.GetString()) == NULL)
+	if (App->config != NULL)
 	{
-		App->savefile_node.append_child(name.GetString());
-		App->savefile_document.save_file("savefile.xml");
+		if (json_object_has_value(App->modules_object, name._Get_data()._Myptr()) == false)
+		{
+			json_object_dotset_string(App->modules_object, "window.title", window_title);
+			json_object_dotset_number(App->modules_object, "window.width", wwidth);
+			json_object_dotset_number(App->modules_object, "window.height", wheight);
+			json_object_dotset_number(App->modules_object, "window.scale", wscale);
+			json_object_dotset_boolean(App->modules_object, "window.fullscreen", wfullscreen);
+			json_object_dotset_boolean(App->modules_object, "window.resizable", wresizable);
+			json_object_dotset_boolean(App->modules_object, "window.borderless", wborderless);
+			json_object_dotset_boolean(App->modules_object, "window.windowed_fullscreen", wwindowed_fullscreen);
+			json_object_dotset_boolean(App->modules_object, "window.vsync", wvsync);
+			
+			json_serialize_to_file_pretty(App->config, "config.json");
+		}
+		else
+		{
+			json_object_dotset_string(App->modules_object, "window.title", window_title);
+			json_object_dotset_number(App->modules_object, "window.width", wwidth);
+			json_object_dotset_number(App->modules_object, "window.height", wheight);
+			json_object_dotset_number(App->modules_object, "window.scale", wscale);
+			json_object_dotset_boolean(App->modules_object, "window.fullscreen", wfullscreen);
+			json_object_dotset_boolean(App->modules_object, "window.resizable", wresizable);
+			json_object_dotset_boolean(App->modules_object, "window.borderless", wborderless);
+			json_object_dotset_boolean(App->modules_object, "window.windowed_fullscreen", wwindowed_fullscreen);
+			json_object_dotset_boolean(App->modules_object, "window.vsync", wvsync);
+
+			json_serialize_to_file_pretty(App->config, "config.json");
+		}
 	}
 	else
 	{
-		LOG("Nothing to save yet.");
-	}
-	*/
+		json_object_dotset_string(App->modules_object, "window.title", window_title);
+		json_object_dotset_number(App->modules_object, "window.width", wwidth);
+		json_object_dotset_number(App->modules_object, "window.height", wheight);
+		json_object_dotset_number(App->modules_object, "window.scale", wscale);
+		json_object_dotset_boolean(App->modules_object, "window.fullscreen", wfullscreen);
+		json_object_dotset_boolean(App->modules_object, "window.resizable", wresizable);
+		json_object_dotset_boolean(App->modules_object, "window.borderless", wborderless);
+		json_object_dotset_boolean(App->modules_object, "window.windowed_fullscreen", wwindowed_fullscreen);
+		json_object_dotset_boolean(App->modules_object, "window.vsync", wvsync);
 
-	if (json_object_has_value(App->modules_object, "window"))
-	{
-		json_object_set_number(window_object, "width", 1024);
 		json_serialize_to_file_pretty(App->config, "config.json");
 	}
+
 	LOG("Saving module %s", name._Get_data()._Myptr());
 	return(true);
 }
@@ -157,23 +202,28 @@ bool ModuleWindow::Load()
 {
 	if (App->config != NULL)
 	{
-		window_title = json_object_dotget_string(window_object, "title");
+		if (json_object_has_value(App->modules_object, name._Get_data()._Myptr()) != false)
+		{
+			window_title = json_object_dotget_string(window_object, "title");
 
-		wwidth = json_object_dotget_number(window_object, "width");
-		wheight = json_object_dotget_number(window_object, "height");
-		wscale = json_object_dotget_number(window_object, "scale");
-		wfullscreen = json_object_dotget_boolean(window_object, "fullscreen");
-		wresizable = json_object_dotget_boolean(window_object, "resizable");
-		wborderless = json_object_dotget_boolean(window_object, "borderless");
-		wwindowed_fullscreen = json_object_dotget_boolean(window_object, "windowed_fullscreen");
-		wvsync = json_object_dotget_boolean(window_object, "vsync");
+			wwidth = json_object_dotget_number(window_object, "width");
+			wheight = json_object_dotget_number(window_object, "height");
+			wscale = json_object_dotget_number(window_object, "scale");
+			wfullscreen = json_object_dotget_boolean(window_object, "fullscreen");
+			wresizable = json_object_dotget_boolean(window_object, "resizable");
+			wborderless = json_object_dotget_boolean(window_object, "borderless");
+			wwindowed_fullscreen = json_object_dotget_boolean(window_object, "windowed_fullscreen");
+			wvsync = json_object_dotget_boolean(window_object, "vsync");
 
-		LOG("Loading module %s", name._Get_data()._Myptr());
+			LOG("Loading module %s", name._Get_data()._Myptr());
+		}
+		else
+			LOG("Could not find the node named %s inside the file config.json", name._Get_data()._Myptr());
 	}
 	else
 	{
-		LOG("Document not found.");
+		LOG("Document config.json not found.");
 	}
 	
-	return(true);
+	return true;
 }

@@ -3,6 +3,9 @@
     "camera": {},
     "interface": {},
     "renderer": {},
+    "input": {
+        "city": "Cupertino"
+    },
     "window": {
         "title": "Twinsen",
         "width": 1280,
@@ -13,8 +16,5 @@
         "borderless": false,
         "windowed_fullscreen": false,
         "vsync": true
-    },
-    "input": {
-        "city": "Cupertino"
     }
 }
