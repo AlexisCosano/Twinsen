@@ -54,9 +54,12 @@ update_status ModuleCamera3D::Update(float dt)
 	}
 
 	// Focusing on the object
-	if (App->input->GetKey(SDL_SCANCODE_F) == KEY_DOWN && App->fbx_loader->meshes.capacity() != 0)
+	if (App->fbx_loader->mesh_to_load.num_vertex != 0)
 	{
-		// Do something
+		if (App->input->GetKey(SDL_SCANCODE_F) == KEY_DOWN)
+		{
+			App->fbx_loader->Focus();
+		}
 	}
 
 	// FPS camera --------------------------------------------------

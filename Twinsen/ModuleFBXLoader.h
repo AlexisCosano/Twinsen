@@ -35,9 +35,10 @@ struct MeshData
 class ModuleFBXLoader : public Module
 {
 private:
-	MeshData mesh_to_load;
+	
 
 public:
+	MeshData mesh_to_load;
 	uint last_texture_id = 0;
 	
 	std::vector<MeshData> meshes;
@@ -55,6 +56,7 @@ public:
 	void LoadMesh(const aiScene* scene, aiNode* children_node);
 	uint GenerateTextureId(const char* texture_path);
 	void SetTexture(const char* path);
+	void Focus();
 
 	// Save & load
 	bool Save();

@@ -7,6 +7,7 @@
 #include "Devil/include/il.h"
 #include "Devil/include/ilut.h"
 #include "Console.h"
+#include "MathGeoLib\Geometry\AABB.h"
 
 #pragma comment (lib, "Assimp/libx86/assimp.lib")
 #pragma comment (lib, "Devil/libx86/DevIL.lib")
@@ -274,4 +275,20 @@ bool ModuleFBXLoader::Load()
 	}
 
 	return ret;
+}
+
+void ModuleFBXLoader::Focus()
+{
+	math::AABB box(float3(0, 0, 0), float3(0, 0, 0));
+	box.Enclose((float3*)App->fbx_loader->mesh_to_load.vertex, App->fbx_loader->mesh_to_load.num_vertex);
+
+	App->camera->Reference.x = box.CenterPoint().x;
+	App->camera->Reference.y = box.CenterPoint().y;
+	App->camera->Reference.z = box.CenterPoint().z;
+
+	App->camera->Position.x = box.maxPoint.x * 2;
+	App->camera->Position.y = box.maxPoint.y * 2;
+	App->camera->Position.z = box.maxPoint.z * 2;
+
+	App->camera->LookAt(App->camera->Reference);
 }

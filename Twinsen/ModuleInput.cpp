@@ -148,6 +148,8 @@ update_status ModuleInput::PreUpdate(float dt)
 					}
 					else
 						App->fbx_loader->LoadFile(file_path.c_str());
+
+					App->fbx_loader->Focus();
 				}
 				else if (type == TEXTURE)
 				{
