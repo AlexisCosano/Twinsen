@@ -6,6 +6,7 @@
 #include "Assimp/include/cfileio.h"
 #include "Devil/include/il.h"
 #include "Devil/include/ilut.h"
+#include "Console.h"
 
 #pragma comment (lib, "Assimp/libx86/assimp.lib")
 #pragma comment (lib, "Devil/libx86/DevIL.lib")
@@ -70,10 +71,12 @@ void ModuleFBXLoader::LoadFile(std::string file_path)
 		aiReleaseImport(scene);
 
 		LOG("Loading scene with path: %s", file_path.c_str());
+		App->ui->console->AddLog("Loading scene with path: %s", file_path.c_str());
 	}
 	else
 	{
 		LOG("Error loading scene %s", file_path.c_str());
+		App->ui->console->AddLog("Error loading scene %s", file_path.c_str());
 	}
 }
 
@@ -96,6 +99,7 @@ void ModuleFBXLoader::LoadMesh(const aiScene* scene, aiNode* children_node)
 			glBindBuffer(GL_ARRAY_BUFFER, mesh_to_load.id_vertex);
 			glBufferData(GL_ARRAY_BUFFER, sizeof(float) * 3 * mesh_to_load.num_vertex, mesh_to_load.vertex, GL_STATIC_DRAW);
 			LOG("Mesh with %d vertices.", mesh_to_load.num_vertex);
+			App->ui->console->AddLog("Mesh with %d vertices.", mesh_to_load.num_vertex);
 
 			if (current_mesh->HasFaces())
 			{
@@ -107,6 +111,7 @@ void ModuleFBXLoader::LoadMesh(const aiScene* scene, aiNode* children_node)
 					if (current_mesh->mFaces[j].mNumIndices != 3)
 					{
 						LOG("WARNING: geometry face with != 3 index!");
+						App->ui->console->AddLog("WARNING: geometry face with != 3 index!");
 					}
 					else
 					{
@@ -151,6 +156,7 @@ void ModuleFBXLoader::LoadMesh(const aiScene* scene, aiNode* children_node)
 			if (texture == nullptr)
 			{
 				LOG("This model has no texture or its texture cannot be found.");
+				App->ui->console->AddLog("This model has no texture or its texture cannot be found.");
 			}
 			else
 			{
@@ -171,17 +177,22 @@ void ModuleFBXLoader::LoadMesh(const aiScene* scene, aiNode* children_node)
 				}
 
 				LOG("Loading this mesh's texture.");
+				App->ui->console->AddLog("Loading this mesh's texture.");
 			}
 
 			meshes.push_back(mesh_to_load);
 			LOG("Loaded mesh with %i vertices.", mesh_to_load.num_vertex);
 			LOG("Loaded mesh with %i indices.", mesh_to_load.num_index);
 			LOG("Loaded mesh with %i triangles.", mesh_to_load.num_vertex / 3);
+			App->ui->console->AddLog("Loaded mesh with %i vertices.", mesh_to_load.num_vertex);
+			App->ui->console->AddLog("Loaded mesh with %i indices.", mesh_to_load.num_index);
+			App->ui->console->AddLog("Loaded mesh with %i triangles.", mesh_to_load.num_vertex / 3);
 		}
 	}
 	else
 	{
 		LOG("This node has no meshes.");
+		App->ui->console->AddLog("This node has no meshes.");
 	}
 	
 	for (int k = 0; k < children_node->mNumChildren; k++)

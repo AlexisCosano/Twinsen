@@ -8,6 +8,7 @@
 #include "MathGeoLib/Math/float3.h"
 #include "MathGeoLib/Algorithm/Random/LCG.h"
 
+class Console;
 
 class ModuleInterface : public Module
 {
@@ -26,6 +27,8 @@ public:
 	// Save & load
 	bool Save();
 	bool Load();
+
+	Console* console;
 
 };
 #endif

@@ -2,6 +2,7 @@
 #include "ModuleInterface.h"
 #include "imGUI\imgui_impl_sdl_gl3.h"
 #include "Glew\include\glew.h"
+#include "Console.h"
 
 #pragma comment( lib, "Glew/libx86/glew32.lib" )
 
@@ -37,7 +38,16 @@ update_status ModuleInterface::Update(float dt)
 	static bool show_test_window = false;
 	static bool show_about_window = false;
 	static bool show_opengl_window = false;
+	static bool show_console =false;
 	static bool quit = false;
+
+	console = new Console();
+	
+	if(show_console)
+	{ 
+		console->active = true;
+		console->Draw("Twinsen console");
+	}
 
 	if (show_test_window)
 	{
@@ -266,6 +276,13 @@ update_status ModuleInterface::Update(float dt)
 			ImGui::SameLine();
 			ImGui::Text("%i", random_number);
 
+
+			ImGui::EndMenu();
+		}
+
+		if (ImGui::BeginMenu("Utilities"))
+		{
+			ImGui::Checkbox("Open console", &show_console);
 
 			ImGui::EndMenu();
 		}

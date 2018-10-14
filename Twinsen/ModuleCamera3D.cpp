@@ -42,24 +42,24 @@ update_status ModuleCamera3D::Update(float dt)
 {
 	vec3 newPos(0, 0, 0);
 	float speed = 3.0f * dt;
-	if (App->input->GetKey(SDL_SCANCODE_LSHIFT) == KEY_REPEAT)
-		speed = 8.0f * dt;
 
-	if (App->input->GetKey(SDL_SCANCODE_R) == KEY_REPEAT) newPos.y += speed;
-	if (App->input->GetKey(SDL_SCANCODE_F) == KEY_REPEAT) newPos.y -= speed;
+	// Zoom in and out
+	if (App->input->GetMouseZ() == -1)
+	{
+		newPos += Z * speed * 5;
+	}
+	else if (App->input->GetMouseZ() == 1)
+	{
+		newPos -= Z * speed * 5;
+	}
 
-	if (App->input->GetKey(SDL_SCANCODE_W) == KEY_REPEAT) newPos -= Z * speed;
-	if (App->input->GetKey(SDL_SCANCODE_S) == KEY_REPEAT) newPos += Z * speed;
+	// Focusing on the object
+	if (App->input->GetKey(SDL_SCANCODE_F) == KEY_DOWN && App->fbx_loader->meshes.capacity() != 0)
+	{
+		// Do something
+	}
 
-
-	if (App->input->GetKey(SDL_SCANCODE_A) == KEY_REPEAT) newPos -= X * speed;
-	if (App->input->GetKey(SDL_SCANCODE_D) == KEY_REPEAT) newPos += X * speed;
-
-	Position += newPos;
-	Reference += newPos;
-
-	// Mouse motion ----------------
-
+	// FPS camera --------------------------------------------------
 	if (App->input->GetMouseButton(SDL_BUTTON_RIGHT) == KEY_REPEAT)
 	{
 		int dx = -App->input->GetMouseXMotion();
@@ -93,7 +93,19 @@ update_status ModuleCamera3D::Update(float dt)
 		}
 
 		Position = Reference + Z * length(Position);
+
+		if (App->input->GetKey(SDL_SCANCODE_LSHIFT) == KEY_REPEAT)
+			speed = 8.0f * dt;
+
+		if (App->input->GetKey(SDL_SCANCODE_W) == KEY_REPEAT) newPos -= Z * speed;
+		if (App->input->GetKey(SDL_SCANCODE_S) == KEY_REPEAT) newPos += Z * speed;
+
+		if (App->input->GetKey(SDL_SCANCODE_A) == KEY_REPEAT) newPos -= X * speed;
+		if (App->input->GetKey(SDL_SCANCODE_D) == KEY_REPEAT) newPos += X * speed;
 	}
+
+	Position += newPos;
+	Reference += newPos;
 
 	// Recalculate matrix -------------
 	CalculateViewMatrix();
