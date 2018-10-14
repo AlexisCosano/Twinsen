@@ -141,7 +141,13 @@ update_status ModuleInput::PreUpdate(float dt)
 				type = GetFileType(file_path.c_str());
 				if (type == MODEL)
 				{
-					App->fbx_loader->LoadFile(file_path.c_str());
+					if(App->fbx_loader->meshes.size() != 0)
+					{
+						App->fbx_loader->meshes.clear();
+						App->fbx_loader->LoadFile(file_path.c_str());
+					}
+					else
+						App->fbx_loader->LoadFile(file_path.c_str());
 				}
 				else if (type == TEXTURE)
 				{
