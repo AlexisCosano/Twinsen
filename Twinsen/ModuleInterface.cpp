@@ -231,6 +231,35 @@ update_status ModuleInterface::Update(float dt)
 		{
 			App->RequestBrowser("https://www.libsdl.org/download-2.0.php");
 		}
+
+		ImGui::Text("- Assimp  v3.3.1");
+		ImGui::SameLine();
+		if (ImGui::MenuItem("Download here"))
+		{
+			App->RequestBrowser("http://assimp.sourceforge.net/");
+		}
+
+		ImGui::Text("- GLUT  v3.7");
+		ImGui::SameLine();
+		if (ImGui::MenuItem("Download here"))
+		{
+			App->RequestBrowser("https://www.opengl.org/resources/libraries/glut/");
+		}
+
+		ImGui::Text("- Devil  v1.7.8");
+		ImGui::SameLine();
+		if (ImGui::MenuItem("Download here"))
+		{
+			App->RequestBrowser("http://openil.sourceforge.net");
+		}
+
+		ImGui::Text("- mmgr");
+		ImGui::SameLine();
+		if (ImGui::MenuItem("Download here"))
+		{
+			App->RequestBrowser("http://www.stratos-ad.com/forums/index.php?topic=9897.0");
+		}
+
 		ImGui::Separator();
 		ImGui::Text("This engine is under the MIT license, to know more, click");
 		ImGui::SameLine(); if (ImGui::MenuItem("here.")) { App->RequestBrowser("https://opensource.org/about"); }
